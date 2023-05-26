@@ -1,0 +1,71 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}
+    ورود
+{% endblock %}
+
+{% block content %}
+
+    <div style="text-align:right;width:500px;margin:auto;margin-top:50px;">
+
+
+        <br><br>
+
+        <h6 class="ui {{ config.theme_color }} segment"
+            style="margin-bottom: 100px; background-color: rgba(220, 222, 228, 0.479); padding: 50px">
+            <form class="ui huge form" method="post">
+                {% csrf_token %}
+                <div class="field">
+                    <label>نام کاربری</label>
+                    <div class="ui left icon input">
+                        <input type="text" placeholder="نام کاربری" style="text-align: center; font-family: VezFont"
+                               name="username" required
+                               id="id_username">
+                        <i class="user icon"></i>
+                    </div>
+                </div>
+
+
+                <div class="field">
+                    <label>گذرواژه</label>
+                    <div class="ui left icon input">
+                        <input type="password" placeholder="گذرواژه" style="text-align: center; font-family: VezFont;"
+                               name="password" required
+                               id="id_password">
+                        <i class="lock icon"></i>
+                    </div>
+                </div>
+                {% if errors %}
+                    <div class="ui negative message">
+                        <h6>
+                            {{ errors }}
+
+                        </h6>
+                    </div>
+                {% endif %}
+{#                <h6 style="color:black; line-height: 20px;">#}
+{#                    برای اولین ورود، از نام کاربری و گذرواژه ایمیل ce.sharif.edu@ات استفاده کن.#}
+{#                    <br>#}
+{#                    نام کاربری اون چیزیه که قبل @ تو میل سی‌ای میاد.#}
+{#                </h6>#}
+                <button class="ui {{ config.theme_color }} huge button" type="submit"
+                        style="width: 100%; margin-top: 10px">ورود
+                </button>
+            </form>
+            <a href="{% url 'get_password' %}">
+                <button class="ui primary button" type="submit" style="width: 100%; margin-top: 10px">دریافت
+                    گذرواژه برای اولین ورود
+                </button>
+            </a>
+            <a href="{% url 'forgot_password' %}">
+                <button class="ui secondary button" type="submit"
+                        style="width: 100%; margin-top: 10px">فراموشی گذرواژه
+                </button>
+            </a>
+        </h6>
+    </div>
+
+    <br><br>
+
+{% endblock %}

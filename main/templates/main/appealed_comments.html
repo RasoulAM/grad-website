@@ -1,0 +1,78 @@
+{% extends 'main/memento_base.html' %}
+
+{% load static %}
+{% load my_tags %}
+
+{% block content %}
+    <div class="ui secondary {{config.theme_color}} segment"
+         style="margin-top: 100px; margin-right: 200px; margin-left: 200px; margin-bottom: 200px; padding: 60px;">
+        {% for comment in comments %}
+                <div class="ui message">
+                <p style="font-size: 14px;">
+                    {{ comment.text }}
+                </p>
+                <div class="ui  divider"></div>
+                <div class="ui equal width grid">
+                    <div class="ui right middle aligned  column">
+                    فرستنده:
+                        {% if comment.is_anonymous %}
+                            ناشناس
+                        {% else %}
+                            {{comment.commenter | default:"ناشناس"}}
+                        {% endif %}
+                    </div>
+                    <div class="ui left aligned  column" >
+                        <a href="{% url 'overrule-comment' comment.pk %}">
+                            <button class="ui  green button">
+تو دفترچه باشه
+                            </button>
+                        </a>
+                        <a href="{% url 'deny-appeal-comment' comment.pk %}">
+                            <button class="ui  {{config.theme_color}} button">
+
+تو دفترچه نباشه
+                            </button>
+                        </a>
+                    </div>
+                </div>
+                </div>
+        {% endfor %}
+    </div>
+    <div class="ui mini modal" style="top:auto;bottom:auto;right:auto;left:auto;">
+        <div class="header" style="text-align: right">
+            مطمئن هستید؟
+        </div>
+        <div class="actions" style="text-align:left;">
+            <div class="ui negative button">
+                نه!
+            </div>
+            <div class="ui positive right labeled icon button">
+                آره
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script>
+        $(document).ready(function () {
+            $("a button").on('click', function (event) {
+                const button = $(event.target);
+                if (button.data("confirmed")) {
+                    button.data("confirmed", false);
+                    return;
+                }
+                event.preventDefault();
+
+                $('.ui.modal').modal({
+                    onApprove: function () {
+                        button.data("confirmed", true);
+                        button.click();
+                    }
+                }).modal('show')
+                ;
+            })
+        });
+    </script>
+{% endblock %}

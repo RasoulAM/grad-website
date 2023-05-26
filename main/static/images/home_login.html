@@ -1,0 +1,384 @@
+<html>
+
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Home Page</title>
+
+    <link rel="stylesheet" type="text/css" href="semantic/out/semantic.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+        crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="semantic/out/semantic.min.js"></script>
+
+
+    <style>
+        @font-face {
+            font-family: 'VezFont';
+            src: url('fonts/iransans.ttf'), url('fonts/IRANSans_Medium.ttf'), url('fonts/iransans_bold.ttf'), url('fonts/IRANSans_Black.ttf');
+        }
+
+        @font-face {
+            font-family: 'VezFontBold';
+            src: url('fonts/IRANSans_Medium.ttf'), url('fonts/iransans_bold.ttf'), url('fonts/IRANSans_Black.ttf');
+        }
+
+        * {
+            font-family: 'VezFontBold';
+
+        }
+
+        .ui.button {
+            font-family: 'VezFont';
+        }
+
+        .ui.items {
+            font-family: 'VezFont';
+        }
+
+        h1 {
+            padding-bottom: 50px;
+        }
+
+        section {
+            padding-top: 70px;
+            padding-right: 0px;
+            padding-bottom: 70px;
+            padding-left: 0px;
+        }
+
+        p {
+            font-family: 'VezFont';
+            font-size: 14;
+            font-weight: 500;
+            line-height: 2.2em;
+        }
+
+        .jumbotron {}
+
+        .navbar {}
+
+        .visibility.example .overlay {
+            background-color: #FFFFFF;
+            padding: 0em;
+            box-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
+            transition: all 0.5s ease;
+            background: transparent;
+        }
+
+        /* change style */
+
+        .visibility.example .fixed.overlay {
+            position: fixed;
+            padding: 1em;
+            box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+
+    <script>
+        $('.overlay.example .overlay')
+            .visibility({
+                type: 'fixed',
+                offset: 15 // give some space from top of screen
+            })
+            ;
+
+        $('.ui.dropdown')
+            .dropdown()
+            ;
+
+        $(function () {
+            $('.ui.dropdown').dropdown();
+        });
+
+        $(function () {
+            $('.ui.dropdown').dropdown();
+            $('.overlay.example .overlay')
+                .visibility({
+                    type: 'fixed',
+                    offset: 15 // give some space from top of screen
+                });
+        });
+    </script>
+
+
+</head>
+
+<body dir="rtl" class="pushable" style="font-weight: 400; font-size: 14px !important; line-height: normal;">
+
+    <div class="pusher">
+        <div class="ui secondary vertical masthead center aligned segment">
+
+            <div class="ui secondary container">
+                <div class="overlay">
+                    <div class="ui huge secondary menu">
+
+                        <a class="active big item">
+                            <i class="home large icon" style="margin: 5px;"></i> صفحه‌ی اصلی </a>
+                        <a class="item">
+                            <i class="user large icon"></i> مشاهده‌ی نیکوکاران </a>
+                        <a class="item">
+                            <i class="building large icon"></i> مشاهده‌ی موسسات </a>
+
+                        <div class="left menu">
+                            <div class="ui dropdown simple item" style="margin: 2px;">
+                                <img class="ui mini circular image" src="avatar6.png" style="margin: 5px"> علیرضا وزوایی
+                                <i class="ui dropdown icon" style="margin: 5px"></i>
+                                <div class="menu">
+                                    <div class="item" data-value="profile" style="align-content:center;">مشاهده‌ی پروفایل</div>
+                                    <div class="item" data-value="exit">خروج</div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="ui primary icon input">
+                                    <input placeholder="جستجوی نیکوکاران و موسسات" type="text" style="font-family: VezFont">
+                                    <i class="inverted circular search link icon"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="text container" style="padding: 40px; margin: 40px;">
+                <h1 style="padding: 10px">همیار</h1>
+                <h2 style="padding: 10px;">سامانه‌ی ارائه‌ی خدمات داوطلبانه</h2>
+                <br>
+                <div class="ui huge primary button" style="margin:10px;">همین حالا ثبت نام کن !</div>
+            </div>
+        </div>
+
+
+
+
+
+        <section>
+            <div class="ui container w1000 transition visible">
+                <div class="ui very relaxed middle aligned stackable grid">
+                    <div class="eleven wide column">
+                        <h1>همیار چیست ؟</h1>
+                        <p class="ui secondary huge">
+                            همیار، سامانه‌ی ارائه‌ی کمک‌های نیکوکارانه و داوطلبانه‌ی خیرین و نیکوکاران است. به کمک همیار می توانید لیستی از پروژه های
+                            نیکوکارانه‌ی در حال انجام توسط موسسات مختلف را مشاهده کنید و کمک‌های نقدی خود را صرف پیشبرد پروژه‌ی
+                            دلخواه خود کنید. علاوه بر این می توانید خدمات نیکوکارانه‌ای که قادر به ارائه‌ی آن‌ها هستید را
+                            ثبت کنید و این خدمات را به موسساتی که نیازمند چنین خدماتی هستند ارائه دهید. هم‌چنین اگر شما در
+                            حال اجرای یک پروژه‌ی نیکوکارانه هستید، می توانید از خدمات و کمک‌های نقدی و غیرنقدی خیرین علاقه‌مند،
+                            بهره‌مند شوید.
+                        </p>
+                        <h3 class="ui primary text">
+                            پس همین حالا به همیار بپیوندید!
+                        </h3>
+                    </div>
+                    <div class="five wide column">
+                        <image class="ui circular center aligned medium image" src="quera.svg"></image>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section style="background-color:rgba(220, 222, 228, 0.479)">
+            <div class="ui container w1000 transition visible">
+                <div class="ui very relaxed middle aligned stackable grid">
+                    <div class="five wide column">
+                        <image class="ui circular center aligned medium image" src="user2.jpg"></image>
+                    </div>
+                    <div class="four wide column">
+
+                    </div>
+                    <div class="seven wide column">
+                        <h1>نیکوکار هستید ؟</h1>
+                        <p class="ui secondary huge">
+                            همین حالا ثبت نام کنید و در کمک‌های نقدی و غیرنقدی سهیم باشید!
+                        </p>
+                        <div class="ui primary huge button">
+                            ثبت‌‌ نام نیکوکار
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="ui container w5000 transition visible">
+                <div class="ui very relaxed middle aligned stackable grid">
+                    <div class="eleven wide column">
+                        <h1> در پروژه‌ی خود نیاز به کمک نقدی یا خدمات نیکوکارانه دارید؟</h1>
+                        <p class="ui secondary huge">
+                            همین حالا ثبت نام کنید و با نیکوکاران آشنا شوید!
+                        </p>
+                        <div class="ui primary huge button">
+                            ثبت‌‌ نام موسسه
+                        </div>
+                    </div>
+                    <div class="five wide column">
+                        <image class="ui circular center aligned medium image" src="school.png"></image>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section style="background-color:rgba(220, 222, 228, 0.479)">
+            <div class="ui container w1000 transition visible">
+                <div class="ui very relaxed middle aligned stackable grid">
+                    <div class="one wide column">
+
+                    </div>
+
+                    <div class="seven wide column">
+
+                        <h1>درباره‌ی ما</h1>
+
+                        <div class="ui items">
+                            <div class="ui item">
+                                <image src="avatar2.png" class="ui circular small image" , style="margin-left: 25px"></image>
+                                <div class="content">
+                                    <div class="header" style="font-family: 'VezFont';">
+                                        (master) الیاس حیدری
+                                        <br>
+                                    </div>
+                                    <div class="meta">
+                                        درباره‌ی الیاس
+                                    </div>
+                                    <div class="discription">
+                                        <p>
+                                            او بسیار خفن است. او خفن بیوانفورماتیک است. او 93 ای دو رشته‌ای پنج ساله است.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ui item">
+                                <image src="avatar3.png" class="ui circular small image" , style="margin-left: 25px"></image>
+                                <div class="content">
+                                    <div class="header" style="font-family: 'VezFont';">
+                                        (Yadack Designer) آرین تاجمیر ریاحی
+                                        <br>
+                                    </div>
+                                    <div class="meta">
+                                        درباره‌ی آرین
+                                    </div>
+                                    <div class="discription">
+                                        <p>
+                                            او بسیار خفن است. او تنها ابرفول اتوماتا است. او 94 ای سه سال و نیمه است.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="seven wide column">
+
+                        <h1></h1>
+
+                        <div class="ui items">
+                            <div class="ui item">
+                                <image src="avatar4.png" class="ui circular small image" , style="margin-left: 25px"></image>
+                                <div class="content">
+                                    <div class="header" style="font-family: 'VezFont';">
+                                        (UI Designer) علیرضا وزوایی
+                                        <br>
+                                    </div>
+                                    <div class="meta">
+                                        درباره‌ی علیرضا
+                                    </div>
+                                    <div class="discription">
+                                        <p>
+                                            او بسیار خفن است. او خفن چند بعدی است. او 94 ای است.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ui item">
+                                <image src="avatar6.png" class="ui circular small image" , style="margin-left: 25px"></image>
+                                <div class="content">
+                                    <div class="header" style="font-family: 'VezFont';">
+                                        (Project Manager) امیررضا مزینی
+                                        <br>
+                                    </div>
+                                    <div class="meta">
+                                        درباره‌ی امیررضا
+                                    </div>
+                                    <div class="discription">
+                                        <p>
+                                            او اصلا خفن نیست. او دچار عقب ماندگی ذهنی است. او 94 ای است.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="one wide column">
+
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="ui container w1000 transition visible">
+                <div class="ui very relaxed middle aligned stackable grid">
+
+                    <div class="ui center aligned container">
+                        <image src="statistic.png" class="ui circular centered small image"></image>
+                    </div>
+                    <br>
+                    <div class="ui center aligned container">
+
+                        <div class="ui teal large statistic">
+
+                            <div class="value">
+                                85000
+                            </div>
+                            <div class="label" style="font-family: VezFont; margin-top: 10px;">
+                                کاربر
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+
+    <div class="ui very relaxed middle aligned stackable inverted grid">
+
+        <div class="seven wide column">
+
+            <div class="ui inverted container transition visible">
+                <h1>ارتباط با ما</h1>
+
+
+            </div>
+
+        </div>
+
+        <div class="nine wide column">
+
+            <image class="ui center aligned image" src="map.png" style="margin: 20px"></image>
+        </div>
+
+    </div>
+
+
+
+</body>
+
+</html>

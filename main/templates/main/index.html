@@ -1,0 +1,475 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load my_tags %}
+
+{% block active_home %}active {% endblock %}
+{% block red_home %}{{ config.theme_color }} {% endblock %}
+
+{% block extra_script %}
+    <link rel="stylesheet" href={% static "compiled/flipclock.css" %}>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+    <script src={% static "compiled/flipclock.js" %}></script>
+
+
+    <script type="text/javascript">
+        var clock;
+
+        $(document).ready(function () {
+
+            // Grab the current date
+            var currentDate = new Date();
+
+            // Set some date in the future. In this case, it's always Jan 1
+            var futureDate = new Date(Date.UTC(2019, 04, 05, 10, 0, 0));
+
+            // Calculate the difference in seconds between the future and current date
+            var diff = Math.max(0, futureDate.getTime() / 1000 - currentDate.getTime() / 1000);
+
+            console.log(currentDate)
+            console.log(futureDate)
+            console.log(diff)
+            // Instantiate a coutdown FlipClock
+            clock = $('.clock').FlipClock(diff, {
+                clockFace: 'DailyCounter',
+                countdown: true
+            });
+        });
+    </script>
+
+{% endblock %}
+
+{% block extra_header %}
+    <div class="text container" style="padding: 40px; margin: 40px 0;width: 100%">
+        {% if user.is_authenticated %}
+            {#            <div class="container hinge-nav" style="text-align: center">#}
+            {#                <div class="flip-counter clock flip-clock-wrapper" style="display:inline-block; width: auto;"></div>#}
+            {#            </div>#}
+            {##}
+            {#            <center>#}
+            {#                <h3 style="margin-top: 50px; color: #991d1d">#}
+            {#                    زمان باقی‌مانده تا روز جشن !#}
+            {#                </h3>#}
+            {#            </center>#}
+            <h1 style="padding: 10px">
+                فارغ
+                <i class="ui graduation hat huge icon"></i>
+            </h1>
+            <h2 style="padding: 10px;">سامانه‌ی فارغ‌التحصیلی</h2>
+        {% else %}
+            <h1 style="padding: 10px">
+                فارغ
+                <i class="ui graduation hat huge icon"></i>
+            </h1>
+            <h2 style="padding: 10px;">سامانه‌ی فارغ‌التحصیلی</h2>
+            <br>
+            <a class="ui huge {{ config.theme_color }} button" style="margin:10px;" href="{% url 'login' %}">همین حالا
+                وارد شو
+                !</a>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <section>
+        <div class="ui container w1000 transition visible">
+            <div class="ui very relaxed middle aligned stackable grid">
+                <div class="eleven wide column">
+                    <h2>فارغ چیه ؟</h2><br>
+                    <p class="ui secondary huge" style="font-size: 15px;" align="justify">
+                        فارغ سامانه‌ی تولید و جمع‌آوری محتوای فارغ‌التحصیلی عه.
+                        تو فارغ بچه‌ها می‌تونن پروفایل بسازن و با مراجعه به پروفایلای بقیه برای همدیگه متن‌های یادگاری
+                        بنویسن.
+                        همینطور توی بخش ترین میتونن به همدیگه رای بدن تا مشخص شه توی هر چیزی برترین کیه.
+                        یک بخش تایم‌لاین هم داریم که توش اتفاقات مهم دوره رو یکجا ثبت کنیم و ببینیم.
+                        توی شترگاوپلنگ هم می‌تونین برای هرکس سه تا کلمه بنویسین که به نظرتون بهتر اون شخص رو توصیف
+                        می‌کنه. بعضی از چیزایی که
+                        اینجا
+                        می‌نویسیم هم قراره توی یه دفترچه چاپ بشه و بمونه برامون.
+                        <br>
+                        فارغ قراره تا سال‌ها بالا بمونه که مثلا چند سال دیگه بیایم نگاش کنیم شاد شیم و یه جایی باشه برای
+                        جمع کردن خاطرات دوره‌مون. پس سعی کنین قشنگش کنین، عکسای خوشحال بذارین و برای دوستاتون متن‌های
+                        قشنگ بنویسین.
+                    </p>
+                </div>
+                <div class="five wide column">
+                    <div style="text-align: center;">
+                        <image class="ui rounded center aligned medium image"
+                               src={% static "images/man-woman.jfif" %}></image>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% if not user.is_authenticated %}
+        <section style="background-color:rgba(220, 222, 228, 0.479)">
+            <div class="ui container w1000 transition visible">
+                <div class="ui very relaxed middle aligned stackable grid">
+                    <div class="five wide column">
+                        <div style="text-align: center;">
+                            <image class="ui circular center aligned medium image"
+                                   src={% static "images/grad.png" %}></image>
+                        </div>
+                    </div>
+                    <div class="three wide column">
+
+                    </div>
+                    <div class="seven wide column">
+                        <h2>دانشجو هستی؟</h2><br>
+                        <h4 class="ui secondary huge">
+                            همین الان وارد شو و پروفایلتو بساز!
+                        </h4>
+                        <a class="ui {{ config.theme_color }} huge button" style="margin-top: 10px;"
+                           href="{% url 'login' %}">
+                            ورود دانشجو
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    {% else %}
+
+        <section style="background-color:rgba(220, 222, 228, 0.479)">
+            <div class="ui container w5000 transition visible">
+                <div class="ui very relaxed middle aligned stackable grid">
+                    <div class="five wide column">
+                        <center>
+                            <image class="ui circular center aligned medium image"
+                                   src="{% static 'images/comment.png' %}"></image>
+                        </center>
+                    </div>
+                    <div class="eleven wide column">
+                        <h2> ارسال یادگاری </h2><br>
+                        <h4 class="ui secondary huge" style="line-height: 35px;" align="justify">
+                            برین تو
+                            <a href="{% url "comment" %}">
+                                این صفحه
+                            </a>
+                            و برای دوستاتون یادگاری بنویسین! اگرم می‌خواید برای کل دوره متن یا خاطره‌ای به یادگار
+                            بگذارین به
+                            <a href="{% url "opinion" %}"> این صفحه</a>
+                            برین.
+                            یادگاری‌هاتونو می‌تونین به اسم خودتون یا به صورت ناشناس بفرستین.
+                            همه‌ی این یادگاری‌هایی که می‌نویسین بعدا توی دفترچه چاپ میشه.
+                            بنابراین سعی کنین چیزای خوب و قابل چاپ برای هم بنویسین!
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {% if settings.tarin_enabled %}
+            <section>
+                <div class="ui container w5000 transition visible">
+                    <div class="ui very relaxed middle aligned stackable grid">
+                        <div class="eleven wide column">
+                            <h2> برترین‌ها </h2><br>
+                            <h4 class="ui secondary huge" style="line-height: 35px;" align="justify">
+                                تو
+                                <a href="{% url "question" %}">این قسمت</a>
+                                می‌تونین بهترین‌ها رو انتخاب کنین و
+                                برترین‌ها تو هر زمینه‌ رو هم می‌تونین تو
+                                <a href="{% url "best_results" %}">این قسمت</a>
+                                ببینین!
+                                (البته نتایج بهترین‌ها ممکنه الان فعال نباشه و بعد از این که همه رای دادن معلوم بشه!)
+                            </h4>
+                        </div>
+                        <div class="five wide column">
+                            <div style="text-align: center;">
+                                <image class="ui circular center aligned medium image"
+                                       src={% static "images/cup.png" %}></image>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+    {% endif %}
+
+    <section style="background-color:rgba(220, 222, 228, 0.479)">
+        <div class="ui container w1000 transition visible">
+            <div class="ui very relaxed middle aligned stackable grid">
+
+                {#                <div class="four wide column">#}
+                {##}
+                {#                    <h2>ارتباط با ما</h2><br><br>#}
+                {##}
+                {#                    <div class="ui stackable grid">#}
+                {##}
+                {#                        <div class="six wide column">#}
+                {#                            <image class="ui circular center aligned tiny image"#}
+                {#                                   src="{% static 'images/avatar1.jfif' %}"></image>#}
+                {#                        </div>#}
+                {#                        <div class="ten wide column" style="margin-top: 20px">#}
+                {#                            <h4>علیرضا</h4>#}
+                {#                            <div style="font-size: 12px;">#}
+                {#                                <i class="blue large telegram icon"></i>#}
+                {#                                vezvaeia@#}
+                {#                            </div>#}
+                {#                            {% if user.is_authenticated %}#}
+                {#                                <div style="font-size: 12px;">#}
+                {#                                    <i class="{{config.theme_color}} large google icon"></i>#}
+                {#                                    vezvaeia@gmail#}
+                {#                                </div>#}
+                {#                            {% endif %}#}
+                {#                        </div>#}
+                {#                    </div>#}
+                {##}
+                {#                    <div class="ui stackable grid">#}
+                {##}
+                {#                        <div class="six wide column">#}
+                {#                            <image class="ui circular center aligned tiny image"#}
+                {#                                   src="{% static 'images/avatar2.jfif' %}"></image>#}
+                {#                        </div>#}
+                {#                        <div class="ten wide column" style="margin-top: 20px">#}
+                {#                            <h4>آرین</h4>#}
+                {#                            <div style="font-size: 12px;">#}
+                {#                                <i class="blue large telegram icon"></i>#}
+                {#                                AryanTR@#}
+                {#                            </div>#}
+                {#                            {% if user.is_authenticated %}#}
+                {#                                <div style="font-size: 12px;">#}
+                {#                                    <i class="{{config.theme_color}} large google icon"></i>#}
+                {#                                    artajmir3@gmail#}
+                {#                                </div>#}
+                {#                            {% endif %}#}
+                {#                        </div>#}
+                {#                    </div>#}
+                {##}
+                {##}
+                {#                </div>#}
+                {##}
+                {#                <div class="four wide column">#}
+                {##}
+                {#                    <br><br><br><br>#}
+                {##}
+                {#                    <div class="ui stackable grid">#}
+                {##}
+                {#                        <div class="six wide column">#}
+                {#                            <image class="ui circular center aligned tiny image"#}
+                {#                                   src="{% static 'images/avatar3.jfif' %}"></image>#}
+                {#                        </div>#}
+                {#                        <div class="ten wide column" style="margin-top: 20px">#}
+                {#                            <h4>آریا</h4>#}
+                {#                            <div style="font-size: 12px;">#}
+                {#                                <i class="blue large telegram icon"></i>#}
+                {#                                aryakowsary@#}
+                {#                            </div>#}
+                {#                            {% if user.is_authenticated %}#}
+                {#                                <div style="font-size: 12px;">#}
+                {#                                    <i class="{{config.theme_color}} large google icon"></i>#}
+                {#                                    aryakowsary@gmail#}
+                {#                                </div>#}
+                {#                            {% endif %}#}
+                {#                        </div>#}
+                {#                    </div>#}
+                {##}
+                {#                    <div class="ui stackable grid">#}
+                {##}
+                {#                        <div class="six wide column">#}
+                {#                            <image class="ui circular center aligned tiny image"#}
+                {#                                   src="{% static 'images/avatar4.jfif' %}"></image>#}
+                {#                        </div>#}
+                {#                        <div class=" ten wide column#}
+                {#                            " style="margin-top: 20px">#}
+                {#                            <h4>کیوان</h4>#}
+                {#                            <div style="font-size: 12px;">#}
+                {#                                <i class="blue large telegram icon"></i>#}
+                {#                                akmohtashami@#}
+                {#                            </div>#}
+                {#                            {% if user.is_authenticated %}#}
+                {#                                <div style="font-size: 12px;">#}
+                {#                                    <i class="{{config.theme_color}} large google icon"></i>#}
+                {#                                    <span style="font-size:10px;">akmohtashami97@gmail</span>#}
+                {#                                </div>#}
+                {#                            {% endif %}#}
+                {#                        </div>#}
+                {#                    </div>#}
+                {##}
+                {##}
+                {#                </div>#}
+                {##}
+                {#                <div class="two wide column" style="margin-bottom: 240px;">#}
+                {#                    <h2>آمار</h2>#}
+                {#                </div>#}
+                {##}
+                {#                <div class="three wide column">#}
+                {##}
+                {#                    <div class="ui center aligned container">#}
+                {#                        <image src="{% static 'images/statistic.png' %}"#}
+                {#                               class="ui circular centered small image"></image>#}
+                {#                    </div>#}
+                {#                    <br>#}
+                {#                    <div class="ui center aligned container">#}
+                {##}
+                {#                        <div class="ui black large statistic">#}
+                {##}
+                {#                            <div class="value" style="font-family: VezFont;">#}
+                {#                                {{ students_count }}#}
+                {#                            </div>#}
+                {#                            <div class="label" style="font-family: VezFont; margin-top: 10px;">#}
+                {#                                دانشجو#}
+                {#                            </div>#}
+                {##}
+                {#                        </div>#}
+                {##}
+                {#                    </div>#}
+                {##}
+                {#                </div>#}
+                {##}
+                {#                <div class="three wide column">#}
+                {##}
+                {#                    <div class="ui center aligned container">#}
+                {#                        <image src="{% static 'images/comments.png' %}"#}
+                {#                               class="ui circular centered small image"></image>#}
+                {#                    </div>#}
+                {#                    <br>#}
+                {#                    <div class="ui center aligned container">#}
+                {##}
+                {#                        <div class="ui black large statistic">#}
+                {##}
+                {#                            <div class="value" style="font-family: VezFont;">#}
+                {#                                {{ texts_count }}#}
+                {#                            </div>#}
+                {#                            <div class="label" style="font-family: VezFont; margin-top: 10px;">#}
+                {#                                متن یادگاری#}
+                {#                            </div>#}
+                {##}
+                {#                        </div>#}
+                {##}
+                {#                    </div>#}
+                {##}
+                {#                </div>#}
+                {##}
+                {#                <div style="margin-top: 40px">#}
+                {#                    <i class="big copyright icon"></i>#}
+                {#                    تمامی حقوق این سایت برای فارغ‌التحصیلان CE94 محفوظ است.#}
+                {#                </div>#}
+
+                <div class="two wide column" style="margin-bottom: 240px;">
+                    <h2>
+                        <i class="ui red chart line icon"></i>
+                        آمار
+                    </h2>
+                </div>
+
+                {% if settings.sgp_enabled %}
+                    <div class="three wide column">
+
+                        <div class="ui center aligned container">
+                            <image src="{% static 'images/statistics.svg' %}"
+                                   class="ui circular centered small image"></image>
+                        </div>
+                        <br>
+                        <div class="ui center aligned container">
+
+                            <div class="ui black large statistic">
+
+                                <div class="value" style="font-family: VezFont;">
+                                    {{ sgp_words_count|to_persian_digit }}
+                                </div>
+                                <div class="label" style="font-family: VezFont; margin-top: 10px;">
+                                    تعداد کلمات شترگاوپلنگ
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                {% endif %}
+
+                <div class="three wide column">
+
+                    <div class="ui center aligned container">
+                        <image src="{% static 'images/comments.png' %}"
+                               class="ui circular centered small image"></image>
+                    </div>
+                    <br>
+                    <div class="ui center aligned container">
+
+                        <div class="ui black large statistic">
+
+                            <div class="value" style="font-family: VezFont;">
+                                {{ texts_count|to_persian_digit }}
+                            </div>
+                            <div class="label" style="font-family: VezFont; margin-top: 10px;">
+                                تعداد متن‌های یادگاری
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="three wide column">
+
+                    <div class="ui center aligned container">
+                        <image src="{% static 'images/statistic.png' %}"
+                               class="ui circular centered small image"></image>
+                    </div>
+                    <br>
+                    <div class="ui center aligned container">
+
+                        <div class="ui black large statistic">
+
+                            <div class="value" style="font-family: VezFont;">
+                                {{ students_count|to_persian_digit }}
+                            </div>
+                            <div class="label" style="font-family: VezFont; margin-top: 10px;">
+                                تعداد دانشجوها
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                {% if settings.tarin_enabled %}
+                    <div class="three wide column">
+
+                        <div class="ui center aligned container">
+                            <image src="{% static 'images/stat.png' %}"
+                                   class="ui circular centered small image"></image>
+                        </div>
+                        <br>
+                        <div class="ui center aligned container">
+
+                            <div class="ui black large statistic">
+
+                                <div class="value" style="font-family: VezFont;">
+                                    {{ tarin_votes_count|to_persian_digit }}
+                                </div>
+                                <div class="label" style="font-family: VezFont; margin-top: 10px;">
+                                    تعداد رای‌های ترین‌ها
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <div style="margin-top: 40px">
+                <i class="big copyright icon"></i>
+                تمامی حقوق این سایت برای گروه تایتان محفوظ است.
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+{% endblock %}
+
+{% block footer_section_style %}
+    background-color:rgba(220, 222, 228, 0.479);
+{% endblock %}

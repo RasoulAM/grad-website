@@ -1,0 +1,16 @@
+{% load static %}
+{% load easy_thumbnails_tags %}
+
+{% if user.profile.profile_picture %}
+    {% if size == 'big' %}
+        {% thumbnail user.profile.profile_picture 300x300 %}
+    {% else %}
+        {% thumbnail user.profile.profile_picture 50x50 %}
+    {% endif %}
+{% else %}
+    {% if user.profile.gender == 'Man' %}
+        {% static "/images/default_man.jfif" %}
+    {% else %}
+        {% static "/images/default_woman.jfif" %}
+    {% endif %}
+{% endif %}

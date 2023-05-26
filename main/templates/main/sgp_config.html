@@ -1,0 +1,107 @@
+{% extends 'main/base.html' %}
+
+{% load my_tags %}
+
+{% block title %}
+    مدیریت شترگاوپلنگ
+{% endblock %}
+
+{% block extra_head %}
+    <script>
+
+
+        $(function () {
+            $('.ui.accordion').accordion();
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="ui secondary {{config.theme_color}} segment"
+         style="margin-top: 100px; margin-right: 200px; margin-left: 200px; margin-bottom: 200px; padding: 60px;">
+        <div>
+            <div class="ui dividing header">
+                <h3 style="font-family: VezFont">مدیریت کلمات شترگاوپلنگ</h3>
+            </div>
+            <h5 style="margin-top: 30px;color: black;line-height: 22px;">
+                اینجا میتونید تصمیم بگیرید که کدوم کلمه‌هایی که برای شما پیشنهاد داده شده توی suggestion برای نفرات بعدی
+                هم آورده بشه.
+                <br/>
+                تذکر: لطفا علاوه بر عبارات ناراحت‌کننده، در نظر داشته باشید که کلمات نامناسبی که برای فضای عمومی دوره
+                مناسب نیستند رو هم تایید نکنید.
+            </h5>
+            <div class="ui form" style="margin-top: 10px">
+                <div class="ui fluid accordion">
+                    <div class="title" style="font-family: VezFont">
+                        <h4>
+                            <div>
+                                <i class="{{config.theme_color}} dropdown icon"></i>
+                                <label><h5>کلماتی که تا حالا برات تو قسمت شتر‌گاوپلنگ اومده : </h5></label>
+                            </div>
+                        </h4>
+                    </div>
+                    <div class="content">
+                        <div class="ui stackable grid" style="margin-top: 10px;">
+                            {% for suggestion in suggestions %}
+                                <div class="four wide column">
+                                    <div class="ui slider checkbox" style="margin: 0px; padding: 0px;">
+                                        <input type="checkbox" name="suggestion_{{ forloop.count }}"
+                                               id="id_suggestion_{{ forloop.counter }}"
+                                                {% if is_accepteds|get_ith:forloop.counter0 %}
+                                               checked=""
+                                                {% endif %}
+                                               onchange="
+                                                       if(this.checked){
+                                                       $.ajax({
+                                                       url: '{% url 'accept-word' %}',
+                                                       data: {'text': '{{ suggestion }}'},
+                                                       success: function (data) {
+                                                       }
+                                                       });
+                                                       } else{
+
+                                                       $.ajax({
+                                                       url: '{% url 'reject-word' %}',
+                                                       data: {'text': '{{ suggestion }}'},
+                                                       success: function (data) {
+                                                       }
+                                                       });
+                                                       }
+                                                       "
+                                        >
+                                        <label for="id_suggestion_{{ forloop.counter }}">
+                                            {{ suggestion }}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="ui checkbox" style="margin-top: 20px">
+                <input type="checkbox" name="torlerant" id="id_tolerant" style="margin: 5px;"
+                        {% if user.profile.is_tolerant %}
+                       checked
+                        {% endif %}
+                       onchange="
+                               $.ajax({
+                               url: '{% url 'toggle-tolerant' %}',
+                               success: function (data) {
+                               }
+                               });
+                               "
+                >
+                <label for="id_tolerant"><h5 style="margin-left: 7px;line-height: 22px;">
+                    به صورت پیش‌فرض کلمه‌های جدیدی که میان رو تایید شده در نظر بگیر!
+                    <br/>
+                    لطفا با احتیاط این دکمه را انتحاب کنید. انتخاب این گزینه باعث می‌شه هر کلمه‌ جدیدی که برای شما نوشته
+                    میشه، بلافاصله برای افراد بعدی هم پیشنهاد داده بشه.
+                </h5></label>
+            </div>
+        </div>
+    </div>
+{% endblock %}

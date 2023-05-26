@@ -1,0 +1,140 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load my_tags %}
+
+{% block title %}
+    گاه‌شمار
+{% endblock %}
+
+{% block red_timeline %}
+    {{ config.theme_color }}
+{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'main/css/timelinestyle.css' %}"/>
+    <style>
+        .like {
+            font-size: 50px;
+            cursor: pointer;
+            user-select: none;
+            color: red;
+        }
+
+        .dislike {
+            color: darkblue;
+        }
+
+
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <section class="timeline" dir="ltr">
+        <div class="container">
+
+            {% for line in timeline %}
+                <div class="timeline-item" id="timeline_{{ line.pk }}">
+                    <div class="timeline-img"></div>
+                    <div
+                            {% if forloop.counter|divisibleby:2 %}
+                                class="timeline-content timeline-card js--fadeInRight">
+                            {% else %}
+                                class="timeline-content timeline-card js--fadeInLeft">
+                            {% endif %}
+                    <div {% if line.image_folder %}class="inverted blurring dimmable image" {% endif %}>
+                        {% if line.image_folder %}
+                            <div class="ui dimmer">
+                                <div class="center">
+                                    <a class="ui huge green button" style="margin-bottom: 20px;"
+                                       href="{{ line.image_folder }}">
+                                        سایر عکس‌ها
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if line.image %}
+                            <div class="timeline-img-header"
+                                 style="background-image: url('{{ line.image.url }}');">
+                                <img src="{{ line.image.url }}" style="visibility: hidden;width: 100%;"/>
+                            </div>
+                        {% else %}
+                            <div class="timeline-img-header"
+                                 style="min-height: 300px; display: flex; align-items: center;text-align: center; justify-content: center ">
+                                <i class="black camera icon huge"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="date" dir="rtl">{{ line.show_date }}</div>
+                    <div class="ui stackable middle aligned grid" style="padding:5px 0 10px 0;margin: 10px 0 0 0"
+                         dir="rtl">
+                        <div class="ui eight wide column"
+                             style="padding: 0 30px; font-family: VezFont;">
+
+                            <h5>{{ line.title }}</h5>
+                        </div>
+                        <div class="ui eight wide left aligned column" style="padding: 0 30px">
+
+                                                <span onclick="toggle_like({{ line.pk }})" style="font-family: VezFont"
+                                                      class="score"><span
+                                                        class="number">{{ line.score|to_persian_digit }}</span>&nbsp; نفر پسندیدن
+                                                    <i
+                                                            class="ui large like {% if not line.voted %}grey{% endif %} icon"
+                                                            style="margin-right: 0"></i>
+                                                </span>
+
+
+                        </div>
+                    </div>
+
+
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+    </section>
+
+    {% csrf_token %}
+
+{% endblock %}
+
+
+
+{% block extra_script %}
+    <script src="https://unpkg.com/scrollreveal"></script>
+
+    <script src="{% static 'main/js/timeline.js' %}"></script>
+    <script>
+        $('.timeline-item .image').dimmer({
+            on: 'hover'
+        });
+
+        function change_like_color(lineid, voted) {
+            if (voted) {
+                $("#timeline_" + lineid + " .like").removeClass('grey')
+            } else {
+                $("#timeline_" + lineid + " .like").addClass('grey')
+            }
+        }
+
+        function toggle_like(lineid) {
+            var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+            fetch('{% url 'like_timeline' %}', {
+                "method": 'POST',
+                "body": '{"timeline_id":' + lineid + '}',
+                "credentials": 'include',
+                "headers": {
+                    "X-CSRFToken": csrftoken,
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                }
+            }).then(response => response.json()).then(response => {
+                change_like_color(lineid, response.voted);
+                $("#timeline_" + lineid + " .score .number").text(response.score)
+            });
+            change_like_color(lineid, !$("#timeline_" + lineid + " .like").hasClass('grey'));
+        }
+    </script>
+{% endblock %}

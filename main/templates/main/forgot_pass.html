@@ -1,0 +1,44 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}
+    ورود
+{% endblock %}
+
+{% block content %}
+
+    <div style="text-align:right;width:500px;margin:auto;margin-top:50px;">
+
+
+        <br><br>
+
+        <h6 class="ui {{config.theme_color}} segment" style="margin-bottom: 100px; background-color: rgba(220, 222, 228, 0.479); padding: 50px">
+            <form class="ui huge form" method="post">
+                {% csrf_token %}
+                <div class="field">
+                    <label>فراموشی رمز عبور</label>
+                    <h6 style="line-height: 20px;">
+                        اگر رمز عبورت رو فراموش کردی، نام کاربریت رو وارد کن تا درستش کنیم.
+                    </h6>
+                    <div class="ui left icon input">
+                        <input type="text" placeholder="نام کاربری" style="text-align: center; font-family: VezFont"
+                               name="username" required
+                               id="id_username">
+                        <i class="user icon"></i>
+                    </div>
+                </div>
+                {% if message %}
+                    <div class="ui negative message">
+                        <h6>
+                            {{ message }}
+                        </h6>
+                    </div>
+                {% endif %}
+                <button class="ui {{config.theme_color}} huge button" type="submit" style="width: 100%; margin-top: 10px">ارسال</button>
+            </form>
+        </h6>
+    </div>
+
+    <br><br>
+
+{% endblock %}

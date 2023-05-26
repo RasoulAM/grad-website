@@ -1,0 +1,253 @@
+{% extends 'main/best_base.html' %}
+{% load my_tags %}
+{% load static %}
+
+{% block active_best_question %} active{% endblock %}
+
+{% block extra_pusher_style %}
+{#    background:linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url({% static 'images/hat-tile.jpg' %});#}
+{% endblock %}
+
+{% block content %}
+    {#    {{ form.as_p }}#}
+    {#    {{ form.errors }}#}
+    {#    <section>#}
+    {#        <form method="post">#}
+    {#            {% csrf_token %}#}
+    {##}
+    {#            <div class="ui segment" style="margin: 50px; padding: 20px;">#}
+    {#                {% if form.errors %}#}
+    {#                    <div class="ui negative message">#}
+    {#                        <p>#}
+    {#                            {% if "wrong candidate" in form.non_field_errors %}#}
+    {#                                به خودت نباید رای بدهی!#}
+    {#                            {% endif %}#}
+    {#                            {% if "please dont votee" in form.non_field_errors %}#}
+    {#                                به خودت نباید رای بدهی!#}
+    {#                            {% endif %}#}
+    {##}
+    {##}
+    {#                        </p>#}
+    {#                    </div>#}
+    {#                {% endif %}#}
+    {#                <h4 style="line-height:35px; margin: 30px; color: green">#}
+    {#                    گزینه های خودتون برای ترین رو انخاب کنید و ثبت کنید!#}
+    {#                    <br>#}
+    {#                    حواستون باشه که اگر یه ترین رو ثبت کنید تا یک ساعت نمیشه تغییرش داد.#}
+    {#                    <br>#}
+    {#                    منتظر ترین های جدید هم باشید...#}
+    {#                </h4>#}
+    {##}
+    {#                <div class="ui two column stackable grid">#}
+    {#                    {% for most in mosts %}#}
+    {#                        <div class="column">#}
+    {#                            <div {% if is_locked|get_most:most %} data-tooltip="#}
+    {#                            برای تغییر یا حذف رای باید حداقل یک ساعت از زمان دادن آن گذشته باشد.#}
+    {#                        " data-position="bottom center"{% endif %}>#}
+    {#                                <div class="ui#}
+    {#                            {% if is_locked|get_most:most %}#}
+    {#                                disabled#}
+    {#                            {% endif %}#}
+    {#                            red secondary segment" style="margin: 20px;">#}
+    {#                                    <div class="ui stackable grid" style="margin: 20px;">#}
+    {#                                        <div class="six wide column">#}
+    {#                                            <h4>#}
+    {#                                                <i class="ui red large#}
+    {#                                            {% if is_locked|get_most:most %}#}
+    {#                                                lock#}
+    {#                                            {% else %}#}
+    {#                                                graduation hat#}
+    {#                                             {% endif %}#}
+    {#                                             icon" style="margin-left: 10px;"></i>#}
+    {#                                                {{ most.text }}#}
+    {#                                            </h4>#}
+    {#                                        </div>#}
+    {#                                        <div class="one wide column"></div>#}
+    {#                                        <div class="nine wide column">#}
+    {##}
+    {#                                            <div class="ui#}
+    {#                                        {% if is_locked|get_most:most %}#}
+    {#                                            disabled#}
+    {#                                        {% endif %}#}
+    {#                                        massive fluid search selection dropdown"#}
+    {#                                                 style="text-align: right;">#}
+    {#                                                <input type="hidden" name="mosts_{{ most.pk }}" این رو بکن#}
+    {#                                                        {% if user.profile.voter|filter_most:most|get_first_of_qset|get_candidate %}#}
+    {#                                                       value="{{ user.profile.voter|filter_most:most|get_first_of_qset|get_candidate }}"#}
+    {#                                                        {% else %}#}
+    {#                                                       value="nobody"#}
+    {#                                                        {% endif %}>#}
+    {#                                                <i class="dropdown massive red icon"></i>#}
+    {#                                                <div class="default text">انتخاب کنید</div>#}
+    {##}
+    {#                                                <div class="ui menu">#}
+    {#                                                    {% for p in people %}#}
+    {#                                                        {% if p.user.username != user.username %}#}
+    {#                                                            <div class="item"#}
+    {#                                                                 style="font-size: 14px; text-align: right; margin-top: 10px; margin-bottom: 10px;"#}
+    {#                                                                 data-value="{{ p.user.username }}">#}
+    {#                                                                <img class="ui massive avatar image"#}
+    {#                                                                     style="margin-left: 5px;"#}
+    {#                                                                     src="{% include 'main/profile_picture.html' with user=p.user %}">#}
+    {#                                                                {{ p.user.get_full_name }}#}
+    {#                                                            </div>#}
+    {#                                                        {% endif %}#}
+    {#                                                    {% endfor %}#}
+    {#                                                    <div class="item"#}
+    {#                                                         style="font-size: 14px; text-align: right; margin-top: 15px; margin-bottom: 15px;"#}
+    {#                                                         data-value="nobody">#}
+    {#                                                        <i class="ui large close icon"></i>#}
+    {#                                                        هیچ‌کس!#}
+    {##}
+    {#                                                    </div>#}
+    {##}
+    {#                                                </div>#}
+    {##}
+    {#                                            </div>#}
+    {#                                        </div>#}
+    {#                                    </div>#}
+    {#                                </div>#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                    {% endfor %}#}
+    {#                </div>#}
+    {#                <center>#}
+    {#                    <button class="ui green massive button" style="margin: 20px;" type="submit">ثبت و ارسال</button>#}
+    {#                </center>#}
+    {#            </div>#}
+    {#        </form>#}
+    {#    </section>#}
+    {##}
+
+    <section>
+        <form method="post">
+            {% csrf_token %}
+            <div class="ui red segment" style="margin: 50px; padding: 20px; margin-left: 150px; margin-right: 150px;">
+                {% if form.errors %}
+                    <div class="ui negative message">
+                        <p>
+                            {% if "wrong candidate" in form.non_field_errors %}
+                                به خودت نباید رای بدهی!
+                            {% endif %}
+                            {% if "please dont votee" in form.non_field_errors %}
+                                به خودت نباید رای بدهی!
+                            {% endif %}
+
+
+                        </p>
+                    </div>
+                {% endif %}
+                <h4 style="line-height:35px; margin: 30px; color: green">
+                    گزینه های خودتون برای ترین رو انتخاب کنین و ثبت کنین!
+                    <br>
+                    حواستون باشه که اگر یه ترین رو ثبت کنین تا یک ساعت نمیشه تغییرش داد.
+
+                </h4>
+                    {% for most in mosts %}
+                        <div>
+                        <div {% if is_locked|get_most:most %} data-tooltip="
+                                برای تغییر یا حذف رای باید حداقل یک ساعت از زمان دادن آن گذشته باشد.
+                            " data-position="bottom center"{% endif %}>
+                            <div class="ui
+                                {% if is_locked|get_most:most %}
+                                    disabled
+                                {% endif %}
+                            {{config.theme_color}} secondary segment" style="margin: 20px;">
+                                <div class="ui stackable grid" style="margin: 20px;">
+
+                                    <div class="five wide column">
+                                        <h4 style="margin-top: 5px;">
+                                            <i class="ui {{config.theme_color}} large
+                                                 {% if is_locked|get_most:most %}
+                                                    lock
+                                                 {% else %}
+                                                    graduation hat
+                                                 {% endif %}
+                                             icon" style="margin-left: 10px;"></i>
+                                            {{ most.text }}
+                                        </h4>
+                                    </div>
+                                    <div class="one wide column"></div>
+                                    <div class="seven wide column">
+
+                                        <div class="ui
+                                            {% if is_locked|get_most:most %}
+                                                disabled
+                                            {% endif %}
+                                         massive fluid search selection dropdown" style="text-align: right;">
+                                            <input type="hidden" name="mosts_{{ most.pk }}" این رو بکن
+                                                    {% if user.profile.voter|filter_most:most|get_first_of_qset|get_candidate %}
+                                                   value="{{ user.profile.voter|filter_most:most|get_first_of_qset|get_candidate }}"
+                                                    {% else %}
+                                                   value="nobody"
+                                                    {% endif %}>
+                                            <i class="dropdown massive {{config.theme_color}} icon"></i>
+                                            <div class="default text">انتخاب کنید</div>
+
+                                            <div class="ui menu">
+
+                                                {% for p in most.participants %}
+                                                    {% if p.user.username != user.username %}
+                                                        <div class="item"
+                                                             style="font-size: 14px; text-align: right; margin-top: 10px; margin-bottom: 10px;"
+                                                             data-value="{{ p.user.username }}">
+                                                            <img class="ui massive avatar image" style="margin-left: 5px;"
+                                                                 src="{% include 'main/profile_picture.html' with user=p.user size='small'%}">
+                                                            {{ p.user.get_full_name }}
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+
+                                                <div class="item"
+                                                     style="font-size: 14px; text-align: right; margin-top: 10px; margin-bottom: 10px;"
+                                                     data-value="nobody">
+                                                    <i class="ui large close icon"></i>
+                                                    هیچ‌کس!
+                                                </div>
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="three wide column">
+                                        <center>
+                                            <h2 style="color: #991d1d;">
+                                                {{ most.vote_set|get_not_null_votes|length|to_persian_digit }}
+                                            </h2>
+                                            شرکت کننده
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+                <center>
+                    <div style="width: 350px; margin-top: 50px">
+                        <div class="ui huge menu">
+                            {% for i in num_pages|my_range %}
+                                <a class="{% spaceless %}
+                                    {% if forloop.counter == page %}
+                                        active
+                                    {% endif %}
+                                {% endspaceless %} item" href="{% url 'question' %}?page={{ forloop.counter }}">
+                                    {{ forloop.counter|to_persian_digit }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </center>
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="ui green massive button" style="margin: 20px;" type="submit">ثبت و ارسال</button>
+                </div>
+
+        </form>
+    </section>
+
+
+
+{% endblock %}

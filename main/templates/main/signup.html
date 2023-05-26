@@ -1,0 +1,330 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+
+{% block title %}
+    تکمیل اطلاعات
+{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'main/cropper/cropper.min.css' %}"/>
+{% endblock %}
+
+{% block navbar_items %}
+    <a class="{% block active_home %}{% endblock %}item" href="{% url 'logout' %}">
+        <i class="home large icon" style="margin: 5px;"></i> صفحه‌ی
+        اصلی </a>
+{% endblock %}
+
+{% block content %}
+
+    <div style="text-align:right;width:800px;margin:auto;margin-top:50px">
+        <div class="ui {{config.theme_color}} segment"
+             style="margin-bottom: 100px; background-color: rgba(220, 222, 228, 0.479); padding: 50px">
+            <form class="ui huge form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="ui dividing header">
+                    <h2 style="font-family: VezFont">ثبت‌نام</h2>
+                </div>
+
+                {% if not form.errors %}
+                    <br><br>
+                {% else %}
+                    <div class="ui negative message">
+                        <p>
+                            {% if "Select a valid choice. None is not one of the available choices." in form.gender.errors %}
+                                پر کردن بخش جنسیت الزامی است.
+                            {% elif "AvatarError" in form.non_field_errors %}
+                                عکس باید مربعی باشد حمال.
+                                <br>
+                                تو هنوز بعد بیست و خورده‌ای سال درس خوندن فرق مربع و مستطیل رو نمی‌فهمی؟
+                            {% elif "This field is required." in form.password1.errors %}
+                                پر کردن بخش گذرواژه الزامی است.
+                            {% elif form.password1.errors %}
+                                گذرواژه مجاز نیست.
+                            {% elif "This field is required." in form.password2.errors %}
+                                پر کردن تکرار گذرواژه الزامی است.
+                            {% elif "The two password fields didn't match." in form.password2.errors %}
+                                تکرار گذرواژه با گذرواژه یکی نیست.
+                            {% elif "This password is too short. It must contain at least 8 characters." in form.password2.errors %}
+                                گذرواژه بسیار کوتاه است. توصیه می‌شود گذرواژهی شامل حداقل ۸ کاراکتر انتخاب کنید.
+                            {% elif form.password2.errors %}
+                                گذرواژه مجاز نیست.
+                            {% else %}
+                                {{ form.errors }}
+                            {% endif %}
+                        </p>
+                    </div>
+                {% endif %}
+                <div class="fields">
+                    <div class="field">
+                        <label for="id_first_name">نام</label>
+                        <input type="text" name="first_name" style="font-family: VezFont" placeholder="نام"
+                               id="id_first_name" value="{{ form.first_name.value }}">
+                    </div>
+                    <div class="field">
+                        <label for="id_last_name">نام خانوادگی</label>
+                        <input type="text" name="last_name" style="font-family: VezFont" placeholder="نام خانوادگی"
+                               id="id_last_name" value="{{ form.last_name.value }}">
+                    </div>
+
+                    <div class="field">
+                        <label for="id_email">ایمیل</label>
+                        <input type="email" placeholder="Email" name="email"
+                               style="text-align:left; font-family: VezFont;"
+                               id="id_email" value="{{ form.email.value }}">
+                    </div>
+
+                    <div class="field">
+                        <label>جنسیت</label>
+                        <div class="ui compact selection dropdown" style="text-align: right;">
+                            <input type="hidden" name="gender" value="{{ form.gender.value }}">
+                            <i class="dropdown {{config.theme_color}} icon"></i>
+                            <div class="default text">جنسیت</div>
+                            <div class="ui massive compact menu">
+                                <div class="item" style="text-align: right;" data-value="Man">پسر</div>
+                                <div class="item" style="text-align: right;" data-value="Woman">دختر</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <h6 style="line-height: 20px; color: #991d1d">
+                    توجه: اسم و فامیلیتونو فارسی بنویسین !
+                </h6>
+
+                <br>
+
+                <div class="field">
+                    <div class="ui massive checked checkbox">
+                        <input type="checkbox" tabindex="0" name="will_participate" class="hidden"
+                               id="celebration" {% if form.will_participate.value is True %} checked {% endif %}>
+                        <label>
+                            <h5 style="line-height: 20px; margin-left: 20px;">
+                                <i class="large graduation hat {{config.theme_color}} icon"></i>
+                                حتما تو جشن فارغ‌التحصیلی شرکت می‌کنم!
+                            </h5>
+                        </label>
+                    </div>
+                </div>
+
+
+                <br>
+
+                <div class="field">
+                    <label for="id_avatar">تصویر پروفایل</label>
+                </div>
+                <input type="file" name="avatar" id="id_avatar">
+                <input type="hidden" id="id_crop" name="crop"/>
+
+                <h6 style="line-height: 20px; color: #991d1d">
+                    عکستون قراره بعدا در اندازه‌های مختلف از جمله اندازه‌های خیلی کوچیک استفاده بشه.
+                    بنابراین عکس بزرگ و نزدیک بذارین!
+                    (از این عکسا که یه منظرست و خودتون توش اندازه‌ی نخودین یا از این عکسا که
+                    ده نفر دیگه هم توش هستن نذارین)
+                    <br>
+                    عکس رو عوض هم می‌تونید بکنید پس نگران نباشید.
+                </h6>
+
+                <br><br>
+
+                <div class="three fields">
+
+                    <div class="disabled field">
+                        <label>نام کاربری</label>
+                        <input type="text" value="{{ user.username }}" name="username"
+                               style="text-align:right; font-family: VezFont;" id="id_username">
+                    </div>
+
+                    <br>
+
+                    <div class="field">
+                        <label for="id_password1">گذرواژه</label>
+                        <input type="password" placeholder="گذرواژه" style="text-align:right; font-family: VezFont;"
+                               name="password1" id="id_password1">
+                    </div>
+
+
+                    <br>
+
+
+                    <div class="field">
+                        <label for="id_password2">تکرار گذرواژه</label>
+                        <input type="password" placeholder="تکرار گذرواژه"
+                               style="text-align:right; font-family: VezFont;"
+                               name="password2" id="id_password2">
+                    </div>
+                </div>
+
+{#                <h6 style="line-height: 20px; color: #991d1d">نام کاربریتون همون چیزیه که قبل از @ توی ایمیلتون اومده.  </h6>#}
+                <br><br>
+                <h5 style="line-height: 20px;">
+                    حالا میخوایم ببینیم توی بخش ترین‌ها شرکت میکنید یا نه
+                    <br>
+                    نمی‌دونید ترین‌ها چیه؟ اینجا توضیحش رو بخونید و لیست ترین‌ها رو ببینید:
+                </h5>
+                <div class="ui accordion">
+                    <div class="title" style="font-family: VezFont">
+                        <h5>
+                            <i class="red dropdown icon"></i>
+                            درباره‌ی ترین‌ها
+                        </h5>
+                    </div>
+                    <div class="content">
+                        <h6 style="line-height: 25px; text-align: justify;">
+                            یکی از بخش‌هایی که داریم بخش "ترین‌ها" عه.
+                            قراره توی یه سری موضوع به اون کسی از بچه‌های دوره که فکر میکنی برترین هست رای بدی،
+                            مثلا "مهربون‌ترین" یا "صنعتی‌ترین".
+                            رای‌هایی که میدین ناشناسه و نتیجه رو بعدا میتونین توی سایت ببینین.
+                            کاندیدهای ترین‌ها بچه‌هایی هستن که توی سایت ثبت‌نام کردن
+                            ولی اگر دوست نداری توی این بخش کاندید باشی میتونی تیک زیر رو برداری، !ولی اون موقع دیگه نمیتونی به کسی هم رای بدی!‌ برای همین ترجیحا سعی کن شرکت کنی!
+                        </h6>
+                    </div>
+                </div>
+                <div class="ui accordion">
+                    <div class="title" style="font-family: VezFont">
+                        <h5>
+                            <i class="red dropdown icon"></i>
+                            لیست ترین‌ها
+                        </h5>
+                    </div>
+                    <div class="content">
+                        <div class="ui large horizontal ordered list">
+                            {% for most in mosts %}
+                                <div class="item">
+                                    {{ most.text }}
+                                </div>
+                                <br>
+                            {% endfor %}
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <br>
+
+                <div class="two fields">
+
+                    <div class="field">
+                        <div class="ui massive checked checkbox">
+                            <input type="checkbox" tabindex="0" class="hidden" name="most_candidate"
+                                   id="best" {% if form.most_candidate.value is True %} checked {% endif %}>
+                            <label>
+                                <h5 style="line-height: 20px;">
+                                    بقیه اجازه دارن که اسم من رو در قسمت برترین‌ها ببینن و منو انتخاب کنن!
+                                </h5>
+                                <h6 style="line-height: 20px; color: #991d1d">
+                                    <i class="ui red exclamation triangle icon"></i>
+                                    هشدار : به هیچ وجه این تیک رو برندارین چون اگه بردارین دیگه خودتونم نمی‌تونین تو
+                                    قسمت برترین‌ها شرکت کنین و رای بدین!
+                                </h6>
+
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="field" style="margin-right: 20px;">
+                        <div class="ui massive checkbox">
+                            <input type="checkbox" tabindex="0" class="hidden" name="is_accepted" required
+                                   id="id_is_accepted"
+                                   onchange="document.getElementById('id_submit').disabled = !this.checked;"/>
+                            <label>
+                                <h5 style="line-height: 20px;">
+                                    قوانین سایت را مطالعه کرده‌ام و با آن موافقم.
+                                    <br>
+                                    فعلا قوانین نداریم. این الکیه :)) ولی باید بزنینش که ثبت‌نام روشن شه!
+                                </h5>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button class="ui {{config.theme_color}} big button" type="submit" id="id_submit" disabled>ثبت</button>
+            </form>
+
+        </div>
+        <div class="ui modal">
+            <i class="close icon"></i>
+            <div class="header" style="text-align: right">
+                <h4 style="font-family: VezFont">برش عکس</h4>
+            </div>
+            <div class="content">
+                <div class="description" style="height:70%">
+                    <div class="ui header" style="text-align: right">
+                        <h5 style="font-family: VezFont">
+                            یه بخش مربعی از عکس انتخاب کن
+                        </h5>
+                    </div>
+                    <img id="modalimg"/>
+                </div>
+
+            </div>
+            <br><br>
+            <div class="actions">
+                <div class="ui red deny button">
+                    بیخیال!
+                </div>
+                <div class="ui positive right labeled icon button">
+                    خوب شد!
+                    <i class="checkmark icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'main/cropper/cropper.min.js' %}"></script>
+    <script language='javascript'>
+        $(document).ready(function () {
+            $('.ui.accordion').accordion();
+            $('.ui.checkbox')
+                .checkbox()
+            ;
+            $("#id_avatar").change(function (e) {
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (n) {
+
+                        $('#modalimg')
+                            .attr('src', n.target.result);
+                        $('.ui.modal').modal({
+                            onHidden: () => {
+                                if (!this.approved) {
+                                    $('#id_avatar').val('');
+                                    $('#id_crop').val('');
+                                }
+                                this.approved = false;
+                                cropper.destroy();
+                            },
+                            onApprove: () => {
+                                this.approved = true;
+                            },
+                        }).modal('show')
+                        ;
+                        var image = document.getElementById('modalimg');
+                        var cropper = new Cropper(image, {
+                            aspectRatio: 1 / 1,
+                            viewMode: 1,
+                            crop: function (event) {
+                                $('#id_crop').val(event.detail.x + ',' + event.detail.y + ',' + event.detail.width
+                                    + ',' + event.detail.height
+                                );
+                            }
+                        });
+
+                        /*
+                        $('#profileimg')
+                            .attr('src', n.target.result);
+                        */
+                    };
+
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        });
+
+    </script>
+{% endblock %}

@@ -1,0 +1,231 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}
+    ویرایش پروفایل
+{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'main/cropper/cropper.min.css' %}"/>
+{% endblock %}
+
+{% block content %}
+    <div style="text-align:right;width:800px;margin:auto;margin-top:50px">
+        <div class="ui {{ config.theme_color }} segment"
+             style="margin-bottom: 100px; background-color: rgba(220, 222, 228, 0.479); padding: 50px">
+            <form class="ui huge form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="ui dividing header">
+                    <h3 style="font-family: VezFont">ویرایش پروفایل</h3>
+                </div>
+
+                {% if not form.errors %}
+                    <br><br>
+                {% else %}
+                    <div class="ui negative message">
+                        <p>
+                            {% if "AvatarError" in form.non_field_errors %}
+                                عکس باید مربعی باشد حمال.
+                                <br>
+                                تو هنوز بعد بیست و خورده‌ای سال درس خوندن فرق مربع و مستطیل رو نمی‌فهمی؟
+                            {% elif "This field is required." in form.password1.errors %}
+                                پر کردن بخش گذرواژه الزامی است.
+                            {% elif form.password1.errors %}
+                                گذرواژه مجاز نیست.
+                            {% elif "This field is required." in form.password2.errors %}
+                                پر کردن تکرار گذرواژه الزامی است.
+                            {% elif "The two password fields didn't match." in form.password2.errors %}
+                                تکرار گذرواژه با گذرواژه یکی نیست.
+                            {% elif "This password is too short. It must contain at least 8 characters." in form.password2.errors %}
+                                گذرواژه بسیار کوتاه است. توصیه می‌شود گذرواژهی شامل حداقل ۸ کاراکتر انتخاب کنید.
+                            {% elif form.password2.errors %}
+                                گذرواژه مجاز نیست.
+                            {% else %}
+                                {{ form.errors }}
+                            {% endif %}
+                        </p>
+                    </div>
+                {% endif %}
+                <div class="fields">
+
+                    <div class="field">
+                        <label for="id_first_name">نام</label>
+                        <input type="text" name="first_name" style="font-family: VezFont"
+                               value="{{ form.first_name.value }}"
+                               id="id_first_name">
+                    </div>
+                    <div class="field">
+                        <label for="id_last_name">نام خانوادگی</label>
+                        <input type="text" name="last_name" style="font-family: VezFont"
+                               value="{{ form.last_name.value }}"
+                               id="id_last_name">
+                    </div>
+                    <div class="field">
+                        <label for="id_email">ایمیل</label>
+                        <input type="email" name="email" style="font-family: VezFont"
+                               value="{{ form.email.value }}"
+                               id="id_email">
+                    </div>
+                    <div class="field">
+                        <label for="id_password1">گذرواژه جدید</label>
+                        <input type="password" placeholder="گذرواژه" style="text-align:right; font-family: VezFont;"
+                               name="password1" id="id_password1">
+                    </div>
+                    <div class="field">
+                        <label for="id_password2">تکرار گذرواژه جدید</label>
+                        <input type="password" placeholder="تکرار گذرواژه"
+                               style="text-align:right; font-family: VezFont;"
+                               name="password2" id="id_password2">
+                    </div>
+
+
+                </div>
+
+                <br><br>
+                {% if user.profile %}
+                    <div class="field">
+                        <label>بیو</label>
+                        <textarea style="height:80px; font-size: 15px; line-height: 25px;"
+                                  placeholder="بیوگرافی" name="bio"
+                                  maxlength="180">{% spaceless %}
+                            {% if form.bio.value %}
+                                {{ form.bio.value }}
+                            {% elif user.profile.bio %}
+                                {{ user.profile.bio }}
+                            {% endif %}
+                        {% endspaceless %}</textarea>
+                    </div>
+                    <div class="field">
+                        <label>تصویر پروفایل</label>
+                        <input type="hidden" id="id_crop" name="crop"/>
+                        <input type="file" id="id_avatar" name="avatar" style="display: none;"/>
+                        <input type="hidden" id="id_delete_avatar" name="delete_avatar" value="0"/>
+                    </div>
+                    <div class="ui centered grid">
+                        <div class="six wide column field">
+                            <div class="ui special cards">
+                                <div class="ui card fluid">
+                                    <div class="blurring dimmable image">
+                                        <div class="ui dimmer">
+                                            <div class="content">
+                                                <div class="center">
+                                                    <div class="ui inverted button" id="setprofilephoto">بارگذاری
+                                                        تصویر
+                                                        پروفایل
+                                                    </div>
+                                                    {% if user.profile.profile_picture %}
+                                                        <br/><br/>
+                                                        <div class="ui {{ config.theme_color }} button"
+                                                             id="deleteprofilephoto">حذف تصویر
+                                                            پروفایل
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <img id="profileimg" class="medium ui image"
+                                             src="{% include "main/profile_picture.html" with size='big' %}">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h6 style="line-height: 20px; color: #991d1d">
+                        عکستون قراره بعدا در اندازه‌های مختلف از جمله اندازه‌های خیلی کوچیک استفاده بشه.
+                        بنابراین عکس بزرگ و نزدیک بذارین!
+                        (از این عکسا که یه منظرست و خودتون توش اندازه‌ی نخودین یا از این عکسا که
+                        ده نفر دیگه هم توش هستن نذارین)
+                        در نهایت این که تو این سایت عکساتون خیلی مهمن. برای همین لطفا حتما عکس بذارین!
+                    </h6>
+
+                    <br><br>
+                {% endif %}
+
+                <button class="ui green big button" type="submit" id="id_submit">ثبت</button>
+
+            </form>
+
+        </div>
+        <div class="ui modal">
+            <i class="close icon"></i>
+            <div class="header" style="text-align: right">
+                برش عکس
+            </div>
+            <div class="content">
+                <div class="description" style="height:70%">
+                    <div class="ui header" style="text-align: right">یه بخش مربعی از عکس انتخاب کن</div>
+                    <img id="modalimg"/>
+                </div>
+
+            </div>
+            <br><br>
+            <div class="actions">
+                <div class="ui red deny button">
+                    بیخیال!
+                </div>
+                <div class="ui positive right labeled icon button">
+                    خوب شد!
+                    <i class="checkmark icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'main/cropper/cropper.min.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.special.cards .image').dimmer({
+                on: 'hover'
+            });
+            $("#setprofilephoto").on("click", function () {
+                $("input#id_avatar").trigger("click");
+            });
+            $("#id_avatar").change(function (e) {
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (n) {
+
+                        $('#modalimg')
+                            .attr('src', n.target.result);
+                        $('.ui.modal').modal({
+                            onHidden: function () {
+                                $('#id_avatar').val('');
+                                $('#id_crop').val('');
+                                cropper.destroy();
+                            }
+                        }).modal('show')
+                        ;
+                        var image = document.getElementById('modalimg');
+                        var cropper = new Cropper(image, {
+                            aspectRatio: 1 / 1,
+                            viewMode: 1,
+                            crop: function (event) {
+                                $('#id_crop').val(event.detail.x + ',' + event.detail.y + ',' + event.detail.width
+                                    + ',' + event.detail.height
+                                );
+                            }
+                        });
+
+                        /*
+                        $('#profileimg')
+                            .attr('src', n.target.result);
+                        */
+                    };
+
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+            $('.positive.button').click(function () {
+                $('.form').submit();
+            });
+            $('#deleteprofilephoto').click(function () {
+                $('#id_delete_avatar').val('1')
+                $('.form').submit();
+            })
+        });
+    </script>
+{% endblock %}

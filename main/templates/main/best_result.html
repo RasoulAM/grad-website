@@ -1,0 +1,133 @@
+{% extends 'main/best_base.html' %}
+{% load static %}
+{% load my_tags %}
+
+{% block active_best_results %} active{% endblock %}
+
+{% block content %}
+    <section>
+        <h3 style="margin-bottom: 20px;margin-right:50px">
+            نتایج ترین ها!
+        </h3>
+        <h4 style="line-height:30px;margin-right: 50px">
+            نتایج دقیق رای گیری که روز جشن معلوم میشه ولی تعداد رای های گزینه های برتر رو میتونید اینجا ببینید.
+            <br>
+            نتایج به مرور به‌روز میشه
+        </h4>
+        {% for most in mosts %}
+            <div class="ui yellow secondary segment" ; style="margin: 30px; padding: 20px">
+                <div class="ui stackable grid">
+                    <div class="three wide column">
+                        <center>
+                            <h4 style="margin-top: 30px;">
+                                <i class="ui yellow large trophy icon" style="margin-left: 10px;"></i>
+                                {{ most.text }}
+                            </h4>
+                        </center>
+                    </div>
+                    <div class="twelve wide column">
+                        <div class="ui huge horizontal list">
+                            {% for i in 3|my_range %}
+                                {% if bests|get_most:most.pk|length > i %}
+                                    {% with c=bests|get_most:most.pk|get_ith:i %}
+                                        <div class="item">
+                                            {% if best_results_released %}
+                                                {{ c|get_ith:2 }}
+                                                <img class="ui tiny avatar image"
+                                                     src={% include "main/profile_picture.html" with user=c|get_ith:0|get_user_by_username size='big' %} syle="margin-left:
+                                                     5px; margin-right: 5px;">
+                                            {% else %}
+                                                <img class="ui tiny avatar image"
+                                                     src="{% get_static_prefix %}images/{{ forloop.counter }}num.jpg"
+                                                     style="margin-left: 5px; margin-right: 5px;">
+                                            {% endif %}
+                                            <div class="content">
+                                                {% if best_results_released %}
+                                                    <div class="header"
+                                                         style="margin-bottom: 7px; font-family: VezFont;">
+                                                        {% with u=c|get_ith:0|get_user_by_username %}
+                                                            {{ u.get_full_name }}
+                                                        {% endwith %}
+                                                    </div>
+                                                {% else %}
+                                                    <div class="header"
+                                                         style="margin-bottom: 7px; font-family: VezFont; width: 100px">
+                                                        ؟؟؟؟
+                                                    </div>
+                                                {% endif %}
+                                                {{ c|get_ith:1|to_persian_digit }}
+                                                رای
+                                            </div>
+                                        </div>
+                                    {% endwith %}
+                                {% else %}
+                                    <div class="item">
+                                        <img class="ui tiny avatar image"
+                                             src="{% get_static_prefix %}images/{{ forloop.counter }}num.jpg"
+                                             style="margin-left: 5px; margin-right: 5px;">
+                                        <div class="content">
+                                            <div class="header"
+                                                 style="margin-bottom: 7px; font-family: VezFont; width: 100px">
+                                                ؟؟؟؟
+                                            </div>
+                                            ۰
+                                            رای
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            {% if best_results_released %}
+                                {% with u=bests|get_most:most.pk|get_by_username:user.username %}
+                                    {% if u|length > 0 %}
+                                        {% with c=u|get_ith:0 %}
+                                            <div class="item" style="color: green">
+                                                {{ c|get_ith:2 }}
+                                                <img class="ui tiny avatar image"
+                                                     src={% include "main/profile_picture.html" with user=c|get_ith:0|get_user_by_username size='big' %} syle="margin-left:
+                                                     5px; margin-right: 5px;">
+                                                <div class="content">
+                                                    <div class="header"
+                                                         style="margin-bottom: 7px; font-family: VezFont;">
+                                                        {% with u=c|get_ith:0|get_user_by_username %}
+                                                            من
+                                                        {% endwith %}
+                                                    </div>
+                                                    {{ c|get_ith:1|to_persian_digit }}
+                                                    رای
+                                                </div>
+                                            </div>
+                                        {% endwith %}
+                                    {% else %}
+{#                                        <div class="item" style="color: green">#}
+{#                                            {{ bests|get_most:most.pk|length|add:1 }}#}
+{#                                            <img class="ui tiny avatar image"#}
+{#                                                 src={% include "main/profile_picture.html" with size='big' %} syle="margin-left:#}
+{#                                                 5px; margin-right: 5px;">#}
+{#                                            <div class="content">#}
+{#                                                <div class="header"#}
+{#                                                     style="margin-bottom: 7px; font-family: VezFont; width: 100px">#}
+{#                                                    من#}
+{#                                                </div>#}
+{#                                                {{ 0|to_persian_digit }}#}
+{#                                                رای#}
+{#                                            </div>#}
+{#                                        </div>#}
+                                    {% endif %}
+                                {% endwith %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="one wide column">
+{#                        <i class="massive red trophy icon" style="margin-top: 10px"></i>#}
+                        <center>
+                            <h2 style="color: #991d1d;margin-top: 10px;">
+                                {{ most.vote_set|get_not_null_votes|length|to_persian_digit }}
+                            </h2>
+                            شرکت کننده
+                        </center>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </section>
+{% endblock %}

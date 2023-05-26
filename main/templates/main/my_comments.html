@@ -1,0 +1,234 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+{% load my_tags %}
+
+{% block title %}
+    {% if user.username == my_user.username %}
+    یادگاری‌های من
+    {% else %}
+        {{ my_user.get_full_name }}
+    {% endif %}
+{% endblock %}
+
+{% block extra_pusher_style %}
+    {#    background:linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url({% static 'images/hat-tile.jpg' %});#}
+{% endblock %}
+
+{% block content %}
+    <div class="ui secondary {{ config.theme_color }} segment"
+         style="margin-top: 100px; margin-right: 200px; margin-left: 200px; margin-bottom: 200px; padding: 60px;">
+
+        <div class="ui stackable grid">
+
+            <div class="ten wide column">
+                <h2 style="margin-bottom: 50px">
+                    {{ my_user.get_full_name }}
+                </h2>
+
+                <h4>بیوگرافی</h4>
+                <p style="text-align: justify;">
+                    {% if my_user.profile.bio %}
+                        {{ my_user.profile.bio|linebreaksbr }}
+                    {% endif %}
+                </p>
+
+                <br><br>
+
+            </div>
+
+            <div class="six wide column">
+                <img src="{% include 'main/profile_picture.html' with user=my_user size='big' %}"
+                     class="ui circular image"
+                     style="margin-top:  0px; margin-bottom: 30px;">
+                <div data-tooltip="
+                            با نوشتن متن‌های بیشتر، نشان بیشتر بگیرید!  روز جشن هم به نشاندارها جایزه میدیم:)
+                        " data-position="bottom center" style="text-align: center;">
+                    <h4 style="margin-top: 15px;">
+                        {% with badge=my_user|get_user_badges %}
+                            {% for i in 4|my_range %}
+                                {% if badge >= forloop.counter %}
+                                    <img src="{% get_static_prefix %}images/{% cycle 4 9 'E' 'C' %}.jfif"
+                                         class="ui mini avatar image">
+                                {% else %}
+                                    <img src="{% static "images/blank.jfif" %}" class="ui mini avatar image">
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
+                    </h4>
+                    <h4>نشان‌ها</h4>
+                </div>
+            </div>
+
+        </div>
+        {% if user.username == my_user.username %}
+            <div class="ui dividing header" style="margin-bottom: 20px;">
+                <h4 style="font-family: VezFont; margin-bottom: 10px;">
+                    <i class="ui large {{ config.theme_color }} arrow alternate circle up icon"></i>
+                    {{ my_user.profile.commenter.all|length|to_persian_digit }}
+                    یادگاری‌ ارسالی
+                </h4>
+            </div>
+            {% if not my_user.profile.commenter.all %}
+                <h5 style="color: #991d1d">
+                    هنوز هییییچ متنی برای هیشکی ننوشتی! برو بنویس دیگه!
+                </h5>
+            {% endif %}
+            {% for cmt in my_user.profile.commenter.all %}
+                <div class="ui {% if cmt.review_state == cmt.review_state.rejected or cmt.review_state == cmt.review_state.appeal_denied %} error {% elif cmt.review_state == cmt.review_state.appealed %} yellow {% else %} success {% endif %} message">
+                    <div class="ui stackable grid">
+                        <div class="six wide column">
+                            <div class="header" style="font-family: VezFont">
+                                <h4>
+                                    برای
+                                    <span>
+                                        <a href="{% url 'profile' cmt.target.user.username%}"
+                                           style="text-decoration : none">
+                                            {{ cmt.target.user.get_full_name }}
+                                            <img src="{% include "main/profile_picture.html" with user=cmt.target.user size='small' %}"
+                                                 class="ui avatar image">
+                                        </a>
+                                        </span>
+                                    {% if cmt.is_anonymous %}
+                                        به صورت
+                                        <i class="ui black large user secret icon"></i>
+                                        ناشناس
+                                    {% endif %}
+                                    <span>
+
+                                 </span>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="ten wide left aligned column">
+                            {% if cmt.review_state == cmt.review_state.rejected %}
+                                <a href="{% url 'appeal-comment' cmt.pk %}">
+                                    <button class="ui big blue button">
+                                        درخواست بررسی گیرنده
+                                    </button>
+                                </a>
+                            {% elif cmt.review_state == cmt.review_state.appealed %}
+                                <span class="ui big teal  label">
+در انتظار تایید گیرنده
+                            </span>
+                            {% endif %}
+                            {% if config.is_comment_enabled %}
+                                <a href="{% url 'edit-comment' %}?target={{ cmt.target.user.username }}">
+                                    <button class="ui big yellow button">
+                                        ویرایش
+                                    </button>
+                                </a>
+                            {% endif %}
+
+                            <a href="{% url 'delete-comment' %}?pk={{ cmt.pk }}">
+                                <button class="ui big red button">
+                                    حذف
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                    <p style="font-size: 14px;">
+                        {{ cmt.text|linebreaksbr }}
+                    </p>
+                </div>
+            {% endfor %}
+
+            <br/><br/><br/>
+
+            <div class="ui dividing header" style="margin-bottom: 20px;">
+                <h4 style="font-family: VezFont; margin-bottom: 10px;">
+                    <i class="ui large {{ config.theme_color }} arrow alternate circle up icon"></i>
+                    {{ my_user.profile.opinions.all|length|to_persian_digit }}
+                    یادگاری‌ برای دوره
+                </h4>
+            </div>
+            {% if not my_user.profile.opinions.all %}
+                <h5 style="color: #991d1d">
+                    هنوز هییییچ متنی برای دوره ننوشتی!
+                    {% if not my_user.profile.commenter.all %}
+                        اینم
+                    {% endif %}
+                    برو بنویس دیگه!
+                </h5>
+            {% endif %}
+            {% for opn in user.profile.opinions.all %}
+                <div class="ui success message">
+                    <div class="ui stackable grid">
+                        <div class="ten wide column">
+                            <div class="header" style="font-family: VezFont">
+                                <h4>
+                                    <span style="color: teal">
+                                    {{ opn.subject }}
+                                </span>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="six wide column">
+                            {% if config.is_opinion_enabled %}
+                            <a href="{% url 'edit-opinion' %}?pk={{ opn.pk }}">
+                                <button class="ui big yellow button">
+                                    ویرایش یادگاری
+                                </button>
+                            </a>
+                            {% endif %}
+                            <a href="{% url 'delete-opinion' %}?pk={{ opn.pk }}">
+                                <button class="ui big red button">
+                                    حذف یادگاری
+                                </button>
+                            </a>
+                        </div>
+
+                    </div>
+                    <p style="font-size: 14px;">
+                        {{ opn.text|linebreaksbr }}
+                    </p>
+                </div>
+            {% endfor %}
+
+
+            <br><br><br>
+
+            <div class="ui dividing header" style="margin-bottom: 20px;">
+                <h4 style="font-family: VezFont; margin-bottom: 10px;">
+                    <i class="ui large {{ config.theme_color }} arrow alternate circle down icon"></i>
+                    {{ user.profile.target.all|length|to_persian_digit }}
+                    یادگاری‌ دریافتی
+                </h4>
+            </div>
+            {% if config.comments_released %}
+                {% for cmt in user.profile.target|get_accepted_comments %}
+                    <div class="ui message">
+                        <div class="header" style="font-family: VezFont">
+                            <h4>
+                                از طرف
+                                <span style="color: teal">
+                                        {% if cmt.commenter and not cmt.is_anonymous %}
+                                            <a href="{% url 'profile' cmt.commenter.user.username%}"
+                                               style="text-decoration : none">
+                                            {{ cmt.commenter.user.get_full_name }}
+                                            <img src="{% include "main/profile_picture.html" with user=cmt.commenter.user size='small' %}"
+                                                 class="ui avatar image">
+                                            </a>
+                                        {% else %}
+                                            ناشناس
+                                            <i class="ui black large user secret icon"></i>
+                                        {% endif %}
+                                    </span>
+                            </h4>
+                        </div>
+                        <p style="font-size: 14px;">
+                            {{ cmt.text|linebreaksbr }}
+                        </p>
+                    </div>
+                {% endfor %}
+
+            {% else %}
+                <h5 style="color: #991d1d">
+                    این قسمت روز جشن باز میشه !
+                </h5>
+            {% endif %}
+
+        {% endif %}
+
+    </div>
+{% endblock %}

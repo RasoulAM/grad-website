@@ -1,0 +1,59 @@
+@font-face {
+    font-family: 'BYekan';
+    src: url('../fonts/BYekan.eot') format('eot'), url('../fonts/BYekan.woff') format('woff'), url('../fonts/BYekan.ttf') format('truetype');
+}
+
+body {
+    direction: rtl;
+    text-align: right;
+    font-family: 'BYekan', Helvetica, Arial, sans-serif;
+}
+
+#menu.login {
+    display: none;
+}
+
+.pusher.login {
+    margin-right: 15rem;
+    padding-top: 2rem;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* needed for container min-height */
+}
+
+.pusher {
+  position: relative; /* needed for footer positioning*/
+  height: auto !important; /* real browsers */
+  min-height: 100%; /* real browsers */
+  padding-top: 6rem;
+  margin-bottom: 1rem;
+}
+
+#mfooter.login {
+  margin-right: 15rem;
+  width: 100%;
+  bottom: 0; /* stick to bottom */
+}
+
+@media only screen and (max-width: 820px) {
+    #menu {
+        display: block !important;
+    }
+
+    #mside {
+        display: none !important;
+    }
+
+    .pusher.login {
+        margin-right: 0rem;
+        padding-top: 6rem;
+    }
+
+    #mfooter.login {
+        margin-right: 0rem;
+    }
+}

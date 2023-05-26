@@ -1,0 +1,65 @@
+{% extends 'main/best_base.html' %}
+{% load my_tags %}
+{% load static %}
+
+{% block active_set_reviewers %}active{% endblock %}
+
+{% block extra_pusher_style %}
+    {#    background:linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url({% static 'images/hat-tile.jpg' %});#}
+{% endblock %}
+
+{% block content %}
+
+    <section>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            <div class="ui segment" style="margin: 50px; padding: 20px; margin-left: 150px; margin-right: 150px;">
+                <h4 style="margin-top: 30px; margin-bottom: 80px; line-height: 30px;">
+                    تو این قسمت برای هرکس انتخاب کن که کی مسئول بررسی پیامای اونه.
+                    توجه کن که برای این که یه نفر توی لیست بررسی بیاد، باید اول بهش از طریق ادمین جنگو
+                    دسترسی comment review داده بشه.
+                </h4>
+                {% if formset.errors %}
+                    <div class="ui negative message">
+                        <p>
+                            {{ formset.errors }}
+                        </p>
+                    </div>
+                {% endif %}
+                {% for form in formset %}
+                    <div class="ui {{ config.theme_color }} secondary segment" style="margin: 20px;">
+                        <div class="ui stackable grid" style="margin: 20px;">
+
+                            <div class="five wide column">
+                                <h4 style="margin-top: 5px;">
+                                    {% with initial_target=form.initial.target|default:"" %}
+                                    {{ form.cleaned_data.target|default:initial_target}}
+                                    {% endwith %}
+                                </h4>
+                            </div>
+                            <div class="one wide column"></div>
+                            <div class="seven wide column">
+                                <div class="hidden">
+                                    {{ form.previous_reviewer }}
+                                    {{ form.target }}
+                                </div>
+                                {{ form.reviewer }}
+
+                            </div>
+                        </div>
+
+                    </div>
+                {% endfor %}
+
+            </div>
+            <div style="text-align: center;">
+                <button class="ui green massive button" style="margin: 20px;" type="submit">ثبت و ارسال</button>
+            </div>
+        </form>
+    </section>
+
+
+
+{% endblock %}

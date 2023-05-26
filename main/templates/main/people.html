@@ -1,0 +1,333 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load my_tags %}
+
+{% block active_people %}active {% endblock %}
+{% block red_people %}{{ config.theme_color }} {% endblock %}
+{% block title %}
+    لیست دانشجویان
+{% endblock %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block content %}
+    <section style="padding-top: 50px;padding-bottom: 35px">
+        <div id="body_container">
+
+            <div style="text-align: center;">
+
+                <form class="ui large form">
+
+                    <div class="ui {{ config.theme_color }} huge icon input">
+                        <input placeholder="جستجوی دانشجو" type="text"
+                               style="font-family: VezFont" name="name" id="search_input">
+                        <i class="inverted circular {{ config.theme_color }} search icon"></i>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+    </section>
+
+    <div class="ui {{ config.theme_color }} secondary segment"
+         style="margin-right: 60px; margin-left: 60px; margin-bottom: 200px; padding: 30px;" id="big_container">
+        <h4 style="display: none;font-family: VezFont" id="empty_message"><i
+                class="{{ config.theme_color }} exclamation triangle icon"></i>
+            این بنده‌خدایی که دنبالشی یا اکانت نداره یا داری اسمشو اشتباه می‌زنی. خودت یه کاریش بکن!
+        </h4>
+        <div class="ui four stackable special cards">
+            {% for prof in people %}
+                <div class="ui fluid {{ config.theme_color }} card student_container" style="padding: 3px;">
+
+
+                    <div class="inverted blurring dimmable image" id="words_ribbon_parent_{{ prof.pk }}">
+                        <div class="ui dimmer">
+                            <div class="content">
+                                <div class="center">
+                                    <div>
+                                        <a class="ui huge green button" style="margin-bottom: 20px;"
+                                           href="{% url 'profile' prof.user.username %}">
+                                            مشاهده‌ی پروفایل
+                                        </a>
+                                    </div>
+                                    {% if prof.user.username != user.username %}
+                                        <div>
+                                            {% if prof.pk in repeated_people %}
+                                                <a class="ui huge {% if not config.is_comment_enabled %}
+                                                    disabled
+                                                {% endif %}
+                                         yellow button" style="margin-bottom: 20px;"
+                                                   href="{% url 'edit-comment' %}?target={{ prof.user.username }}">
+                                                    ویرایش یادگاری
+                                                </a>
+                                            {% else %}
+                                                <a class="ui huge {% if not config.is_comment_enabled %}
+                                                    disabled
+                                                {% endif %}
+                                         red button" style="margin-bottom: 20px;"
+                                                   href="{% url "comment" %}?next=people&default={{ prof.pk }}">
+                                                    ارسال یادگاری
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                    {% if prof.user.username != user.username %}
+                                        {% if settings.sgp_enabled %}
+                                            <div class="ui huge {% spaceless %}
+                                                {% if not config.is_sgp_enabled %}
+                                                    disabled
+                                                {% endif %}{% endspaceless %}
+                                    teal button" name="words" id="words_{{ prof.pk }}">
+                                                شترگاوپلنگ
+                                            </div>
+                                            <script>
+                                                $('#words_{{ prof.pk }}').click(function () {
+                                                    $('#words_modal')
+                                                        .attr('target_pk', "{{ prof.pk }}")
+                                                    ;
+                                                });
+                                            </script>
+                                        {% endif %}
+                                    {% else %}
+                                        <a class="ui huge
+                                   blue button" name="edit_profile" id="edit_profile_buttom"
+                                           href="{% url 'edit_profile' %}">
+                                            ویرایش پروفایل
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% if prof.pk in repeated_people %}
+                            <a class="ui left corner massive label">
+                                <i class="{{ config.theme_color }} envelope icon"></i>
+                            </a>
+                        {% endif %}
+                        <img src={% include "main/profile_picture.html"  with user=prof.user size='big' %} id="img_{{ prof.pk }}">
+                        {% if prof.pk in have_word_people %}
+                            <a class="ui big right ribbon label" id="words_ribbon_{{ prof.pk }}">
+                                <img src={% static "images/girrafe.jpg" %}>
+                            </a>
+                        {% endif %}
+
+                    </div>
+
+
+                    <input type="hidden" id="username_{{ prof.pk }}" value="{{ prof.user.username }}"/>
+
+
+                    <div class="content">
+                        <center><h5 id="name_{{ prof.pk }}" class="student_name">
+                            {{ prof.user.get_full_name }}
+                        </h5></center>
+
+                        <center style="margin-top: 15px;">
+                            {% with badge=prof.user|get_user_badges %}
+                                {% for i in 4|my_range %}
+                                    {% if badge >= forloop.counter %}
+                                        <img src="{% get_static_prefix %}badges/{{ i|get_badge_ith }}.png"
+                                             class="ui big avatar image"/>
+                                    {% else %}
+                                        <img src="{% static "images/blank.jfif" %}"
+                                             class="ui huge avatar image"/>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endwith %}
+                        </center>
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+
+            <div class="ui large center aligned modal"
+                 id="words_modal"
+                 style="bottom: auto; top: auto; right: auto; left: auto; padding: 0px; width: 920px;" target_pk="0">
+
+                <div style="background-color: teal; padding: 15px;">
+                    <div class="ui top attached secondary segment">
+                        <h3 style="text-align: right; margin-right: 10px;">
+                            شترگاوپلنگ
+                        </h3>
+                    </div>
+                    <div class="ui segment" style="margin: 0px; padding: 20px;">
+                        <div class="ui stackable grid" style="alignment: right">
+
+                            <div class="eleven wide column" style="text-align: right; padding: 15px;">
+
+
+                                <h4 style="margin-left: 30px">
+                                    <i class="ui {{ config.theme_color }} huge clipboard list icon"
+                                       style="margin: 0px;"></i>
+                                    <b id="big_name">
+                                        فلانی
+                                    </b>
+                                    <b>
+                                        رو با سه کلمه توصیف کن!
+                                    </b>
+                                    <p style="color: #991d1d; margin-top: 12px;">
+                                        با استفاده از کلمه‌هایی که می‌نویسین برای هرکس یه ابر کلمه
+                                        (word cloud)
+                                        ساخته میشه!
+                                        پس اگر کلمتون تکراریه از لیست انتخابش کنین
+                                        که کلمات شبیه به هم چند بار نوشته نشن.
+                                        ولی از خلاقیتتونم استفاده کنین و کلمات جدید هم بنویسین!
+                                    </p>
+
+                                </h4>
+
+                                <br><br>
+
+                                <form method="post" id="words_form" action="{% url 'word' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" id="big_username" name="target"/>
+                                    <div class="ui huge form" style="margin-top: 30px;">
+                                        <div class="inline huge fields">
+                                            <div class="field">
+                                                <input type="text" placeholder="شتر" list="suggestions_list"
+                                                       style="font-family: VezFont; width: 150px;" name="word_0"
+                                                       autocomplete="off" maxlength="16"
+                                                       id="id_word_0">
+                                            </div>
+                                            <div class="field">
+                                                <input type="text" placeholder="گاو"
+                                                       style="font-family: VezFont; width: 150px;" name="word_1"
+                                                       list="suggestions_list" autocomplete="off" maxlength="16"
+                                                       id="id_word_1">
+                                            </div>
+                                            <div class="field">
+                                                <input type="text" placeholder="پلنگ"
+                                                       style="font-family: VezFont; width: 150px;" name="word_2"
+                                                       list="suggestions_list" autocomplete="off" maxlength="16"
+                                                       id="id_word_2">
+                                            </div>
+                                        </div>
+
+                                        <br><br><br>
+                                        <div class="actions">
+                                            <button class="ui green positive huge button" id="submit_button"
+                                                    type="button">
+                                                ثبت و ارسال
+                                            </button>
+                                            <button class="ui {{ config.theme_color }} huge negative button"
+                                                    id="cancel_button"
+                                                    type="button">
+                                                بعدا دوباره برمی‌گردم و پرش می‌کنم
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="five wide column">
+                                <img src="" class="ui circular image" id="big_picture">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <datalist id="suggestions_list">
+    </datalist>
+
+    <script>
+        $('.special.cards .image').dimmer({
+            on: 'hover'
+        });
+    </script>
+
+
+
+{% endblock %}
+
+{% block extra_script %}
+    <script>
+
+        function submitWordsForm() {
+            var frm = $('#words_form');
+            var pk = $("#words_modal").attr('target_pk');
+            $.ajax({
+                type: frm.attr('method'),
+                url: frm.attr('action'),
+                data: frm.serialize(),
+                success: function (data) {
+                    console.log(data.is_deleted);
+                    if (data.is_deleted) {
+                        $("#words_ribbon_" + pk).remove();
+                    } else {
+                        $("#words_ribbon_" + pk).remove();
+                        $("#words_ribbon_parent_" + pk).append("<a class=\"ui big right ribbon label\" id=\"words_ribbon_" + pk + "\">\n" +
+                            "<img src=" + '{% static "images/girrafe.jpg" %}' + ">\n" +
+                            "                                </a>");
+                    }
+                },
+                error: function (data) {
+                    {#console.log(data.responseText)#}
+                }
+            });
+        }
+
+        function wordsClick() {
+            var pk = $("#words_modal").attr('target_pk');
+            $('#words_modal').modal({
+                onApprove: () => {
+                    submitWordsForm();
+                },
+                onHidden: function () {
+                    $("#suggestions_list").find('option').remove();
+                    $("#id_word_0").val('');
+                    $("#id_word_1").val('');
+                    $("#id_word_2").val('');
+                }
+            }).modal('show');
+            $("#big_picture").attr('src', $("#img_" + pk).attr('src'));
+            $("#big_name").text($("#name_" + pk).text());
+            $("#big_username").attr('value', $("#username_" + pk).attr('value'));
+            $.ajax({
+                url: '{% url 'get_suggestions' %}',
+                data: {
+                    'pk': pk
+                },
+                dataType: 'json',
+                success: function (data) {
+                    for (i in data.suggestions) {
+                        console.log(data.suggestions);
+                        var t = data.suggestions[i].text;
+                        $("#suggestions_list").append('<option value="' + t + '"/>');
+                    }
+                    $("#id_word_0").val(data.word_0);
+                    $("#id_word_1").val(data.word_1);
+                    $("#id_word_2").val(data.word_2);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $(function () {
+                $('.ui.dimmable .dimmer').dimmer('show');
+            });
+            $("[name=words]").on('click', wordsClick);
+            $("#search_input").bind("keyup paste", function () {
+                var searchText = $("#search_input").val().replace(/[‌ ]/g, "");
+                $(".student_container").each(function () {
+                    var $this = $(this);
+                    if ($this.find('.student_name').text().replace(/[‌ ]/g, "").search(searchText) === -1) {
+                        $this.hide();
+                        if ($(".student_container:visible").length === 0)
+                            $("#empty_message").show();
+                    } else {
+                        $("#empty_message").hide();
+                        $this.show()
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

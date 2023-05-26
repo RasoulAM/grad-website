@@ -1,0 +1,233 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}
+    پنل مدیریت
+{% endblock %}
+
+{% block extra_head %}
+    <style>
+        .file-input-wrapper {
+        }
+
+        .file-input-wrapper > input[type="file"] {
+            font-size: 40px;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            opacity: 0;
+        }
+
+        .file-input-wrapper > .btn-file-input {
+
+        }
+    </style>
+{% endblock %}
+
+{% block active_admin %}active {% endblock %}
+
+{% block red_admin %}{{ config.theme_color }} {% endblock %}
+
+{% block content %}
+    <section>
+
+        <div class="ui {{ config.theme_color }} segment" style="margin: 50px; padding: 40px;">
+            <h4 style="line-height: 35px;" align="justify">
+                سلام ادمین عزیز!
+                از این که سایت ما رو برای انجام کارهای فارغ‌التحصیلی خودتون انتخاب کردین، خرسندیم.
+                پیشنهاد میشه قبل از این که شروع به کار با سایت کنی، ویدیوی آموزشی رو ببینی.
+                بیشتر امکانات مورد نیاز از طریق <a href="{% url 'admin:index' %}">ادمین جنگو</a> فراهم شده و سایر
+                امکانات در این صفحه قرار داره.
+                به ویژه توصیه میشه به قسمت <a href="{% url 'admin:main_siteconfiguration_changelist' %}">تنظیمات مدیریتی
+                سایت</a> در ادمین جنگو توجه ویژه‌ای داشته‌باشی.
+                چرا که تنظیمات کلی سایت از طریق اون قسمت کنترل میشه.
+            </h4>
+
+            <div class="ui message" style="margin-top: 100px;">
+
+                <h3 style="margin: 20px;">
+                    <i class="ui {{ config.theme_color }} arrow circle up icon"></i>
+                    آپلود تنظیمات کلی
+                </h3>
+
+                <form method="post" enctype="multipart/form-data" action="{% url 'import-data' %}">
+                    {% csrf_token %}
+                    <center>
+                        <div class="ui two column stackable grid" style="margin-top: 30px; padding: 30px;">
+
+                            <div class="column">
+                                <div class="file-input-wrapper">
+                                    <label class="ui massive {{ config.theme_color }} fluid button">
+                                        <i class="ui upload icon" style="margin-left: 5px;"></i>
+                                        آپلود لیست ترین‌ها با فرمت فلان
+                                    </label>
+                                    <input type="file" name="questions_file">
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="file-input-wrapper">
+                                    <label class="ui massive {{ config.theme_color }} fluid button">
+                                        <i class="ui upload icon" style="margin-left: 5px;"></i>
+                                        آپلود لیست متون place holder در باکس ارسال یادگاری
+                                    </label>
+                                    <input type="file" name="placeholders_file">
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="file-input-wrapper">
+                                    <label class="ui massive {{ config.theme_color }} fluid button">
+                                        <i class="ui upload icon" style="margin-left: 5px;"></i>
+                                        آپلود لیست ایمیل‌های مجاز برای ثبت‌نام در سایت
+                                    </label>
+                                    <input type="file" name="users_file">
+                                </div>
+                            </div>
+
+                        </div>
+                    </center>
+
+                    <center>
+                        <button class="ui green massive button" style="margin: 20px;">ذخیره‌ی تغییرات</button>
+                    </center>
+                </form>
+            </div>
+
+            <div class="ui message" style="margin-top: 50px">
+
+                <h3 style="margin: 20px;">
+                    <i class="ui {{ config.theme_color }} arrow circle down icon"></i>
+                    دانلود یادگاری‌ها و اطلاعات دانشجویان
+                </h3>
+
+                <center>
+                    <div class="ui two column stackable grid" style="margin-top: 30px; padding: 30px;">
+
+                        <div class="column">
+                            <a class="ui massive {{ config.theme_color }} fluid button" href="{% url 'get-profiles' %}">
+                                <i class="ui download icon" style="margin-left: 5px;"></i>
+                                دانلود اطلاعات کاربری دانشجویان
+                            </a>
+                        </div>
+                        <div class="column">
+                            <a class="ui massive {{ config.theme_color }} fluid button" href="{% url 'get-pics' %}">
+                                <i class="ui download icon" style="margin-left: 5px;"></i>
+                                دانلود عکس‌های دانشجویان
+                            </a>
+                        </div>
+                        <div class="column">
+                            <a class="ui massive {{ config.theme_color }} fluid button" href="{% url 'get-comments' %}">
+                                <i class="ui download icon" style="margin-left: 5px;"></i>
+                                دانلود متون یادگاری به دیگران
+                            </a>
+                        </div>
+                        <div class="column">
+                            <a class="ui massive {{ config.theme_color }} fluid button" href="{% url 'get-opinions' %}">
+                                <i class="ui download icon" style="margin-left: 5px;"></i>
+                                دانلود متون یادگاری به دوره
+                            </a>
+                        </div>
+                        <div class="column">
+                            <a class="ui massive {{ config.theme_color }} fluid button" href="{% url 'get-best-results' %}">
+                                <i class="ui download icon" style="margin-left: 5px;"></i>
+                                دانلود نتایج ترین‌ها
+                            </a>
+                        </div>
+                        <div class="column">
+                            <a class="ui massive {{ config.theme_color }} fluid button" id="wordclouds_button">
+                                <i class="ui download icon" style="margin-left: 5px;"></i>
+                                دانلود ابرکلمات
+                            </a>
+                        </div>
+
+                    </div>
+                </center>
+
+            </div>
+        </div>
+        {#        <div class="ui progress" data-value="50" data-total="200" dir="ltr">#}
+        {#            <div class="ui bar">#}
+        {#                <div class="ui progress"></div>#}
+        {#            </div>#}
+        {#            <div class="ui label">در حال ...</div>#}
+        {#        </div>#}
+    </section>
+
+    <div class="ui tiny modal" id="wordclouds_modal" style="top:auto;bottom:auto;right:auto;left:auto;">
+        <div class="header" style="text-align: right">
+            درست کردن ابر کلمات دقایقی طول میکشه لطفا صبر کنید.
+        </div>
+        <div class="content" style="text-align: right">
+            <div id="wordclouds_state">در حال دریافت اطلاعات اولیه...</div>
+        </div>
+        <div class="actions" style="text-align:left;">
+            <div class="ui negative button">
+                بیخیال فعلا
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'jszip/jszip.min.js' %}"></script>
+    <script>
+        function wordclouds_error() {
+            $("#wordclouds_state").text('خطایی رخ داده‌است. لطفا اتصال خود به اینترنت را بررسی کرده و دوباره تلاش کنید.');
+        }
+
+        $(document).ready(function () {
+            let modal_active = false;
+            $("#wordclouds_button").on('click', function () {
+                $('#wordclouds_modal').modal({
+                    closable: false,
+                    onShow: function () {
+                        modal_active = true;
+                        const zip = new JSZip();
+                        let users = [];
+                        let next_user_index = 0;
+                        const get_next_wordcloud = () => {
+                            if (!modal_active)
+                                return;
+                            const $wordclouds_state = $("#wordclouds_state");
+                            if (next_user_index >= users.length) {
+                                $wordclouds_state.text('در حال ساخت فایل زیپ...');
+                                zip.generateAsync({type: "base64"}).then(function (base64) {
+                                    if (!modal_active)
+                                        return;
+                                    window.location = "data:application/zip;base64," + base64;
+                                    $('#wordclouds_modal').modal('hide');
+                                });
+                                return;
+                            }
+                            $wordclouds_state.text('در حال ساخت ابر کلمۀ ' + users[next_user_index].name + '...');
+                            $.ajax({
+                                url: '{% url 'get_wordcloud' %}',
+                                data: {'username': users[next_user_index].username},
+                                success: function (data) {
+                                    zip.file(data.username + ".png", data.image, {base64: true});
+                                    next_user_index += 1;
+                                    get_next_wordcloud();
+                                },
+                                error: wordclouds_error
+                            });
+                        };
+                        $.ajax({
+                            url: '{% url 'get_users' %}',
+                            success: function (data) {
+                                users = data.users;
+                                get_next_wordcloud();
+                            },
+                            error: wordclouds_error
+                        });
+                    },
+                    onHidden: () => {
+                        modal_active = false
+                    }
+                }).modal('show')
+                ;
+            })
+        })
+        ;
+    </script>
+
+{% endblock %}

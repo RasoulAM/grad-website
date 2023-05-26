@@ -1,0 +1,243 @@
+{% extends 'main/memento_base.html' %}
+{% load my_tags %}
+{% load static %}
+
+{% block active_memento_others %}active{% endblock %}
+
+{% block extra_pusher_style %}
+{#    background:linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url({% static 'images/hat-tile.jpg' %});#}
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="ui secondary segment"
+             style="margin-top: 100px; margin-right: 70px; margin-left: 70px; margin-bottom: 200px; padding: 30px;">
+
+            <h3 style="margin-bottom: 60px;">
+                ارسال متن یادگاری به دیگری
+            </h3>
+            {% if form.target.errors %}
+                <div class="ui negative message">
+                    <p>
+                        لطفا فرد یادگاری‌گیرنده را به درستی انتخاب کنید.
+                    </p>
+                </div>
+            {% endif %}
+            {% if form.text.errors %}
+                <div class="ui negative message">
+                    <p>
+                        متاسفانه متن یادگاری نمی‌تواند خالی باشد:(
+                    </p>
+                </div>
+            {% endif %}
+            {% if "wrong candidate" in form.non_field_errors %}
+                <div class="ui negative message">
+                    <p>
+                        نمی‌توانی یادگاری برای خودت بنویسی.
+                    </p>
+                </div>
+            {% endif %}
+            {% if "repeated candidate" in form.non_field_errors %}
+                <div class="ui negative message">
+                    <p>
+                        برای هرکسی فقط یک یادگاری می‌توانی بنویسی. می‌توانی یادگاری قبلی را از قسمت «یادگاری‌های من» ویرایش کنی.
+                    </p>
+                </div>
+            {% endif %}
+            {% if "signup required" in form.non_field_errors %}
+                <div class="ui negative message">
+                    <p>
+                        ابتدا باید
+                        <a href="{% url "signup" %}">فرم ثبت‌نام</a>
+                        را پر کنید. توجه کنید با این‌کار نام شما به لیست دانشجویان افزوده می‌شود.
+                    </p>
+                </div>
+            {% endif %}
+
+            <div class="ui stackable grid" style="font-size: 18px;">
+
+                <div class="eleven wide column">
+                    <span>
+                        <i class="ui big {{config.theme_color}} comment alternate outline icon" style="margin-left: 10px;"></i>
+                         متن یادگاری به
+                    </span>
+                    <div class="ui inline search scrolling dropdown" style="color: teal">
+                        <input type="hidden" name="target" id="id_target"
+                                {% if form.target.value %}
+                               value="{{ form.target.value }}"
+                                {% elif default %}
+                               value="{{ default }}"
+                                {% endif %}
+                        >
+                        <div class="default text">
+                            فلانی
+                        </div>
+                        <div class="ui menu" id="receiver_menu">
+                            {% for p in people %}
+                                <div class="item" style="font-size: 12px;" data-value="{{ p.pk }}">
+                                    <center>
+                                        <img class="ui avatar image"
+                                             src={% include 'main/profile_picture.html' with user=p.user size='big' %}>
+                                        {{ p.user.get_full_name }}
+                                    </center>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <span>
+                    از طرف
+                    </span>
+                    <div class="ui inline dropdown" style="color: teal">
+                        <input type="hidden" name="mode" id="id_mode"
+                                {% if form.mode.value %}
+                               value="{{ form.mode.value }}"
+                                {% else %}
+                               value="normal"
+                                {% endif %}
+                        >
+                        <div class="default text">
+                            لطفا انتخاب کنید
+                        </div>
+                        <div class="ui menu" id="exp">
+                            <div class="item" style="font-size: 12px;" data-value="normal">
+                                <center>
+                                    <img class="ui avatar image" src={% include 'main/profile_picture.html' with size='small' %}>
+                                    {{ user.get_full_name }}
+                                </center>
+                            </div>
+                            <div class="item" style="font-size: 12px;" data-value="anonymous">
+                                <center>
+                                    <i class="ui black large user secret icon"></i>
+                                    ناشناس
+                                </center>
+                            </div>
+                            <div class="item" style="font-size: 12px;" data-value="superanonymous">
+                                <center>
+                                    <i class="ui black large snapchat ghost icon"></i>
+                                    ابرناشناس
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                    <span>
+                    ارسال میشه!
+                    </span>
+                    <h6 style="color: #991d1d; line-height: 20px; margin-top: 20px;">
+                        * متن هایی که میفرستید میتونه به صورت شناس باشه تا طرف مقابل ببینه که براش این متنو نوشتید.
+                        ولی اگر میخواید میتونید متن رو به صورت ناشناس هم بفرستید.
+                        <br>
+                    </h6>
+                    <h6 style="color: #991d1d; line-height: 20px; margin-top: 20px;" id="extra-exp1">
+{#                        * متن ناشناس متنی هست که نویسنده اون هیچ کجا مشخص نخواهد شد.#}
+{#                        ولی برای اینکه چزو پیامای نوشته شده اش به حساب بیاد و بتونه بج بگیره، اسمش رو توی دیتابیس ذخیره#}
+{#                        میکنیم.#}
+{#                        پیامش رو همچنان حذف هم میتونه بکنه.#}
+{#                        اینم بگم که بعد از جشن حتی از توی دیتابیس هم حذف میشه.#}
+{#                        <br>#}
+{#                        <br>#}
+{#                        * پیام ابرناشناس ولی دیگه حتی اسم نویسنده توی دیتابیس هم ذخیره نمیشه،#}
+{#                        پس توی متن های نوشته شده اش هم به حساب نمیاد و بج بهش تعلق نمیگره و حتی نمیتونه بعدا حذفش هم#}
+{#                        بکنه.#}
+                        {#                        * ترجیحا به صورت غیر ناشناس پیام بدید تا اسمتون توی سایت و دفترچه در کنار نوشتتون ثبت بشه.#}
+                        {#                        اگه به دلیلی دوست ندارین اسمتون ثبت بشه از حالت ناشناس یا ابرناشناس استفاده کنین.#}
+                        {#                        تفاوت این دو حالت اینه که تو حالت ناشناس اسمتون تو دیتابیس ما ذخیره‌ میشه اما فرد گیرنده اون رو#}
+                        {#                        نمی‌بینه.#}
+                        {#                        اما تو حالت ابرناشناس اسمتون هیچ‌جا ثبت نمیشه.#}
+                    </h6>
+                    <h6 style="color: #991d1d; line-height: 20px; margin-top: 20px;" id="extra-exp2">
+
+                    </h6>
+                    <div class="ui form" style="margin-top: 20px;">
+                        <div class="field">
+                            <label><h4 style="margin-bottom: 10px;">
+                                متن یادگاری
+                            </h4></label>
+                            <textarea style="height: 500px; font-size: 15px; line-height: 25px;"
+                                      placeholder="{{ placeholder }}" name="text"
+                                      required>{% if form.text.value %}{{ form.text.value }}{% endif %}</textarea>
+                        </div>
+                    </div>
+                    <button type="button" id="id_submit" class="ui huge {{config.theme_color}} button" style="margin: 20px;">
+                        ثبت و ارسال
+                    </button>
+                </div>
+
+                <div class="five wide column">
+                    <center>
+                        <i class="ui massive teal envelope outline icon"></i>
+                        <img class="ui rounded image" style="margin-top: 50px" id="big_picture"
+                             src="">
+                    </center>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </form>
+    <div class="ui mini modal" style="top:auto;bottom:auto;right:auto;left:auto;">
+        <div class="header" style="text-align: right">
+            آیا از ارسال این متن مطمئن هستید؟
+        </div>
+        <div class="content" style="text-align: right">
+            یادتون باشه که این متن قراره در دفترچه یادگاری دوره چاپ بشه و این دفترچه مال همه ما هست.
+            پس لطفا از نوشتن متنهای ناراحت کننده، یا متنهایی که وجودش در دفترچه موجب ناراحتی بقیه میشه پرهیز کنید.
+        </div>
+        <div class="actions" style="text-align:left;">
+            <div class="ui negative button">
+                نه!
+            </div>
+            <div class="ui positive right labeled icon button">
+                آره بفرست بره
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script>
+        function updateImage() {
+            var dataValue = $("#id_target").val();
+            if (dataValue) {
+                $("#big_picture").attr('src', $("#receiver_menu div[data-value=" + dataValue + "] img").attr('src'))
+            }
+        }
+
+        $(document).ready(function () {
+            updateImage();
+            $("#id_target").change(updateImage);
+            $("#id_submit").on('click', function () {
+                $('.ui.modal').modal({
+                    onApprove: function () {
+                        $('form').submit()
+                    }
+                }).modal('show')
+                ;
+            })
+        });
+
+        function showExplanation() {
+            var choice = $("#id_mode").val();
+            console.log(choice);
+            if (choice=="normal"){
+                $("#extra-exp1").text("");
+                $("#extra-exp2").text("");
+            } else if (choice=="anonymous"){
+                $("#extra-exp1").text("*متن ناشناس متنی هست که نویسنده اون هیچ کجا مشخص نخواهد شد. ولی برای اینکه چزو پیامای نوشته شده اش به حساب بیاد و بتونه نشان بگیره، اسمش رو توی دیتابیس ذخیره میکنیم. پیام رو همچنان حذف هم میتونه بکنه.");
+                $("#extra-exp2").text("");
+            } else if (choice=="superanonymous"){
+                $("#extra-exp1").text("*متن ناشناس متنی هست که نویسنده اون هیچ کجا مشخص نخواهد شد. ولی برای اینکه چزو پیامای نوشته شده اش به حساب بیاد و بتونه نشان بگیره، اسمش رو توی دیتابیس ذخیره میکنیم. پیام رو همچنان حذف هم میتونه بکنه.");
+                $("#extra-exp2").text("*پیام ابرناشناس ولی دیگه حتی اسم نویسنده توی دیتابیس هم ذخیره نمیشه، پس توی متن های نوشته شده اش هم به حساب نمیاد و نشان بهش تعلق نمیگره و حتی نمیتونه بعدا حذفش هم بکنه.");
+            }
+
+        }
+
+        $(document).change( function() {
+            $("#exp.data-value").on('change', showExplanation());
+
+         });
+    </script>
+{% endblock %}

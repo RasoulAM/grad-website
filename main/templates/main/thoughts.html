@@ -1,0 +1,87 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}نظرات تو{% endblock %}
+{% block content %}
+<div class="ui two column stackable grid centered">
+    <div class="column">
+        {% if type == 'comment' %}
+        <h1>
+            متن‌های من برای دوستانم
+            <div class="ui icon button" data-content="متنایی که برای دوستامون می‌نویسیم قراره توی دفترچه یادگاری توی صفحشون چاپ بشه!" data-position="bottom left">
+              <i class="question outline icon"></i>
+            </div>
+        </h1>
+        <div class="ui divided items">
+            {% for item in items %}
+          <div class="item">
+            <div class="image">
+                {% if item.target.profile_picture %}
+                <img src="/media/{{ item.target.profile_picture }}" class="ui mini rounded image">
+                {% else %}
+                <img src="{% static "images/default-profile-picture.jpg" %}" class="ui mini rounded image">
+                {% endif %}
+            </div>
+            <div class="middle aligned content">
+              <a class="header">{{ item.target.get_name }}</a>
+              <div class="description">
+                {{ item.text | linebreaksbr }}
+              </div>
+              <div class="extra">
+                <a href="{{ item.url }}" class="ui right floated button">
+                  ویرایش
+                </a>
+              </div>
+            </div>
+          </div>
+            {% empty %}
+            <h4>هنوز برای کسی متن ننوشتی...</h4>
+            {% endfor %}
+        </div>
+        {% else %}
+        <h1>
+            متن‌‌های یادگاری من
+            <div class="ui icon button" data-content="یک یا چند متن درباره‌ی خودت یا دوران دانشجوییت بنویس! این متن‌ها توی صفحه‌ی خودت توی دفترچه‌ی یادگاری‌ دوره چاپ می‌شه." data-position="bottom left">
+              <i class="question outline icon"></i>
+            </div>
+        </h1>
+        <div class="ui divided items">
+            {% for item in items %}
+          <div class="item">
+            <div class="middle aligned content">
+              <a class="header">{{ item.subject }}</a>
+              <div class="description">
+                {{ item.text | linebreaksbr }}
+              </div>
+              <div class="extra">
+                <a href="{{ item.url }}" class="ui right floated button">
+                  ویرایش
+                </a>
+              </div>
+            </div>
+          </div>
+            {% empty %}
+            <h4>هنوز متنی رو ثبت نکرده‌ای...</h4>
+            {% endfor %}
+            </div>
+        {% endif %}
+
+            <div>
+                {% if type == 'comment' %}
+                <a class="ui button positive" href="{% url 'comment' %}">متن جدید</a>
+                {% else %}
+                <a class="ui button positive" href="{% url 'opinion' %}">متن جدید</a>
+                {% endif %}
+            </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+$(document).ready(function(){
+    $('.icon.button')
+      .popup()
+    ;
+});
+</script>
+{% endblock %}

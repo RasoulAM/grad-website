@@ -1,0 +1,98 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+{% if type == 'comment' %}
+                ارسال نظر
+{% else %}
+    ثبت متن
+{% endif %}
+{% endblock %}
+{% block content %}
+    <div class="ui two column stackable grid centered">
+        <div class="column">
+            <h1>
+                نوشتن متن
+            </h1>
+            {% if "/comment" in request.get_full_path %}
+            <div class="ui negative message">
+              <i class="close icon"></i>
+              <div class="header">
+                  حداکثر تعداد کاراکترهای مجاز برای متن ۵۰۰ کاراکتر می باشد.
+              </div>
+            </div>
+            {% endif %}
+            <form method="post" class="ui form">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{ item.id }}" />
+                {% if type == 'comment' %}
+                <div class="required field">
+                    <label>برای</label>
+                    <div class="ui fluid search selection dropdown">
+                        <input type="hidden" name="candidate" required>
+                        <i class="dropdown icon"></i>
+                        <div class="default text">۹۳ای‌ها</div>
+                        <div class="menu">
+                            {% for candidate in candidates %}
+                              <div class="item" data-value="{{ candidate.user.username }}">
+                                  <h4 class="ui image header">
+                                    {% if candidate.profile_picture %}
+                                    <img src="/media/{{ candidate.profile_picture }}" class="ui mini rounded image">
+                                    {% else %}
+                                    <i class="smile outline icon"></i>
+                                    {% endif %}
+                                    {{ candidate.get_name }}
+                                  </h4>
+                              </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="required field">
+                    <label>موضوع</label>
+                    <div><input type="text" name="subject" value="{{ item.subject }}"></div>
+                </div>
+                {% endif %}
+                <div class="required field">
+                    <label>متن</label>
+                    <textarea name="text">{{ item.text }}</textarea>
+                </div>
+                {% if request.get_full_path == "/comment" %}
+                <div class="ui toggle checkbox right floated">
+                  <input type="checkbox" name="anonymous">
+                  <label>ناشناس باشه</label>
+                </div>
+                {% elif "/comment?to=" in request.get_full_path %}
+                <div class="ui toggle checkbox right floated">
+                   <input type="checkbox" name="anonymous">
+                   <label>ناشناس باشه</label>
+                </div>
+                {% endif %}
+                <input class="ui button right floated" type="submit" value="بفرست"/>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $( document ).ready(function () {
+        $('.ui.dropdown')
+            .dropdown('set selected', '{{ item.target.user.username }}')
+            .dropdown({ 'fullTextSearch': 'exact' });
+        $('.ui.form')
+          .form({
+            fields: {
+              {% if type == 'comment' %}
+              candidate: 'empty',
+              text: ['maxLength[500]', 'empty'],
+              {% else %}
+              subject  : 'empty',
+              text     : 'empty',
+              {% endif %}
+            }
+          })
+        ;
+    });
+</script>
+{% endblock %}

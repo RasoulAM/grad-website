@@ -1,0 +1,332 @@
+{% load static %}
+{% load my_tags %}
+
+<html>
+<title>
+    {% block title %}سامانه فارغ التحصیلی{% endblock %}
+</title>
+<head>
+
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=0.1">
+
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/hat.jfif' %}">
+
+    <link rel="stylesheet" type="text/css" href={% static "semantic/out/semantic.min.css" %}>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src={% static "semantic/out/semantic.min.js" %}></script>
+
+
+    <style>
+        @font-face {
+            font-family: 'VezFont';
+            src: url({% static 'fonts/iransans.ttf' %}), url({% static 'fonts/IRANSans_Medium.ttf' %}), url({% static 'fonts/iransans_bold.ttf' %}), url({% static 'fonts/IRANSans_Black.ttf' %});
+        }
+
+        @font-face {
+            font-family: 'VezFontBold';
+            src: url({% static 'fonts/IRANSans_Medium.ttf' %}), url({% static 'fonts/iransans_bold.ttf' %}), url({% static 'fonts/IRANSans_Black.ttf' %});
+        }
+
+        * {
+            font-family: 'VezFontBold';
+
+        }
+
+        .ui.button {
+            font-family: 'VezFont';
+        }
+
+        .ui.items {
+            font-family: 'VezFont';
+        }
+
+        h1 {
+            padding-bottom: 50px;
+        }
+
+        section {
+            padding-top: 70px;
+            padding-right: 0px;
+            padding-bottom: 70px;
+            padding-left: 0px;
+        }
+
+        p {
+            font-family: 'VezFont';
+            font-size: 14;
+            font-weight: 500;
+            line-height: 2.2em;
+        }
+
+        /* background-image{
+            opacity: 0.1;
+        } */
+
+        .jumbotron {
+        }
+
+        .navbar {
+        }
+
+        .visibility.example .overlay {
+            background-color: #FFFFFF;
+            padding: 0em;
+            box-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
+            transition: all 0.5s ease;
+            background: transparent;
+        }
+
+        /* change style */
+
+        .visibility.example .fixed.overlay {
+            position: fixed;
+            padding: 1em;
+            box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
+        }
+
+
+        .ui.secondary.menu .dropdown.item > .menu {
+            margin-top: 0;
+        }
+
+        .list > .item:before {
+            content: none !important;
+        }
+
+    </style>
+
+    {% block extra_head %}{% endblock %}
+
+</head>
+
+<body dir="rtl" class="pushable" style="font-weight: 400; font-size: 14px !important; line-height: normal;">
+
+<div class="pusher" style="font-weight: 400; font-size: 14px !important; line-height: normal;
+        {% block extra_pusher_style %}{% endblock %}">
+    <!--background:linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url('images/hat-tile.jpg');-->
+    <div class="ui secondary vertical masthead center aligned segment">
+
+        <div class="ui secondary container">
+            <div class="overlay">
+                <div class="ui huge secondary stackable menu">
+                    {% block navbar_items %}
+                        <a class="{% block active_home %}{% endblock %}item" href="{% url 'home' %}">
+                            <i class="home {% block red_home %}{% endblock %}large icon" style="margin: 3px;"></i>
+                            صفحه‌ی
+                            اصلی </a>
+
+                        {% if not user.is_authenticated %}
+                            <div class="left item">
+                                <div class="item" style="margin: 2px;">
+                                    <a class="ui {{ config.theme_color }} button" href="{% url 'login' %}">ورود</a>
+                                </div>
+                            </div>
+                        {% else %}
+                            <a class="{% block active_people %}{% endblock %}item" href="{% url 'people' %}">
+                                <i class="user circle outline {% block red_people %}{% endblock %}large icon" ;
+                                   style="margin: 3px;"></i> مشاهده‌ و جستجوی
+                                دانشجو‌ها </a>
+
+                            <div class="ui simple dropdown item">
+                                <div>
+                                    <i class="comment
+                                                {% block red_comment %}{% endblock %} alternate outline large icon"
+                                       style="margin: 3px;"></i> یادگاری
+                                </div>
+                                <div class="menu">
+                                    <a class="
+
+                                            {% block active_memento_others %}{% endblock %} {% spaceless %}
+                                                {% if not config.is_comment_enabled %}
+                                                    disabled
+                                                {% endif %}
+                                            {% endspaceless %} item"
+                                       data-value="profile" style="align-content:center;"
+                                       href="{% url 'comment' %}">
+                                        یادگاری برای دیگران
+                                    </a>
+                                    <a class="{% block active_memento_self %}{% endblock %} {% spaceless %}
+                                                {% if not config.is_opinion_enabled %}
+                                                    disabled
+                                                {% endif %}{% endspaceless %} item" data-value="exit"
+                                       href="{% url 'opinion' %}">
+                                        یادگاری برای دوره
+                                    </a>
+                                    {% if request.user.review_access %}
+                                        <a class="{% block active_memento_review %}{% endblock %} item"
+                                           data-value="exit"
+                                           href="{% url 'review_comment' %}">
+                                            بازنگری یادگاری‌ها
+                                        </a>
+                                    {% endif %}
+                                    {% if request.user.is_superuser %}
+                                        <a class="{% block active_set_reviewers %}{% endblock %} item" data-value="exit"
+                                           href="{% url 'set-reviewers' %}">
+                                            تعیین ناظران یادگاری
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                <i class="ui {{ config.theme_color }} dropdown icon" style="margin: 5px"></i>
+                            </div>
+                            {% if settings.tarin_enabled %}
+                                <div class="ui simple dropdown item">
+                                    <div>
+                                        <i class="trophy {% block red_best %}{% endblock %} large icon"
+                                           style="margin: 3px;"></i>
+                                        برترین‌ها
+                                    </div>
+                                    <div class="menu">
+                                        {% if request.user.profile and request.user.profile.most_candidate %}
+                                            <a class="
+                                                    {% block active_best_question %}{% endblock %} {% if not config.is_most_voting_enabled %}disabled{% endif %} item"
+                                               style="align-content:center;"
+                                               href="{% url 'question' %}">
+                                                انتخاب برترین‌ها
+                                            </a>
+                                            <a class="{% block active_best_participation %}{% endblock %} item"
+                                               style="align-content:center;"
+                                               href="{% url 'best_category_participation' %}">
+                                                وضعیت شرکت در ترین‌ها
+                                            </a>
+                                        {% endif %}
+                                        <a class="{% block active_best_results %}{% endblock %} item"
+                                           href="{% url 'best_results' %}">
+                                            نتایج
+                                        </a>
+                                    </div>
+                                    <i class="ui {{ config.theme_color }} dropdown icon" style="margin: 5px"></i>
+                                </div>
+                            {% endif %}
+                            {% if settings.timeline_enabled %}
+                                <a class="{% block timeline %}{% endblock %}item" style="margin: 5px;"
+                                   href="{% url 'timeline' %}">
+                                    <i class="
+                                        {% block red_timeline %}{% endblock %} calendar alternate outline large icon"
+                                       style="margin: 3px"></i>
+                                    گاه‌شمار</a>
+                            {% endif %}
+                            {#                            <a class="item" href="http://ssc.ce.sharif.edu/GraduationCeremony2019/" dideo-checked="true">#}
+                            {#                                <i class=" signup large icon" style="margin: 3px;"></i>#}
+                            {#                            ثبت‌نام در جشن</a>#}
+                            {% if user.is_superuser %}
+                                <a class="{% block active_admin %}{% endblock %}item" style="margin: 5px;"
+                                   href="{% url 'admin-panel' %}">
+                                    <i class="user plus {% block red_admin %}{% endblock %}large icon"
+                                       style="margin: 5px;"></i>
+                                    پنل ادمین</a>
+                            {% endif %}
+                            <div class="left menu">
+                                {% if user.profile.target.require_target_review|length > 0 %}
+                                    <div class="ui item">
+                                        <a href="{% url 'appealed-comments' %}">
+                                            <h4 style="margin-left: 5px; color: darkred">
+                                                بررسی یادگاری‌ها برای چاپ
+                                            </h4>
+                                        </a>
+                                    </div>
+                                {% else %}
+                                    <div class="ui item" style="color: teal">
+                                        <h3 style="margin-left: 5px;">
+                                            {{ user.profile.target.all|length|to_persian_digit }}
+                                        </h3>
+                                        یادگاری دریافتی
+                                    </div>
+                                {% endif %}
+
+                                <div class="ui simple dropdown item">
+                                    {% if user.profile %}
+                                        <img class="ui mini circular image"
+                                             src="{% include "main/profile_picture.html" with size='small' %}"
+                                             style="margin: 5px">
+                                    {% endif %}
+                                    {% if user.first_name %}
+                                        {{ user.first_name }}
+                                        {{ user.last_name }}
+                                    {% else %}
+                                        {{ user.username }}
+                                    {% endif %}
+                                    <i class="ui {{ config.theme_color }} dropdown icon" style="margin: 5px"></i>
+                                    <div class="menu">
+                                        <a class="item" data-value="profile" style="align-content:center;"
+                                           href="{% url 'edit_profile' %}">
+                                            ویرایش پروفایل
+                                        </a>
+                                        <a class="item" href="{% url 'comments' %}">
+                                            یادگاری‌های من
+                                        </a>
+                                        {% if settings.sgp_enabled %}<a class="{% spaceless %}
+{% endspaceless %} item" href="{% url 'sgp_config' %}">
+                                            مدیریت کلمات شترگاوپلنگ
+                                        </a>
+                                        {% endif %}
+                                        <a class="item" data-value="exit" href="{% url 'logout' %}">
+                                            خروج
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        {% endif %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+        {% block extra_header %}{% endblock %}
+    </div>
+    {% block content %}{% endblock %}
+    <section style="background-image: url({% static 'images/grads.gif' %}); padding: 30px; height: 300px;
+            {% block footer_section_style %}{% endblock %}">
+
+    </section>
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+        crossorigin="anonymous"></script>
+
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src={% static "semantic/out/semantic.min.js" %}></script>
+<script>
+    $('.overlay.example .overlay')
+        .visibility({
+            type: 'fixed',
+            offset: 15 // give some space from top of screen
+        })
+    ;
+
+    $('.ui.dropdown')
+        .dropdown({fullTextSearch: true})
+    ;
+
+    $(function () {
+        $('.ui.dropdown').dropdown({fullTextSearch: true});
+    });
+
+    $(function () {
+        $('.ui.dropdown').dropdown({fullTextSearch: true});
+        $('.overlay.example .overlay')
+            .visibility({
+                type: 'fixed',
+                offset: 15 // give some space from top of screen
+            });
+    });
+</script>
+{% block extra_script %}
+
+{% endblock %}
+</body>
+
+</html>

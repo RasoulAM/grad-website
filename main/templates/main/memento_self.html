@@ -1,0 +1,143 @@
+{% extends 'main/memento_base.html' %}
+{% load static %}
+
+{% block active_memento_self %} active{% endblock %}
+
+{% block extra_pusher_style %}
+{#    background:linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url({% static 'images/hat-tile.jpg' %});#}
+{% endblock %}
+
+{% block content %}
+    {#    {{ form.errors }}#}
+    <form method="post">
+        {% csrf_token %}
+        <div class="ui secondary segment"
+             style="margin-top: 100px; margin-right: 70px; margin-left: 70px; margin-bottom: 200px; padding: 30px;">
+
+
+            <h3 style="margin-bottom: 20px;">
+                یادگاری به دوره
+            </h3>
+            <h4>
+                برای دوره یه متن خاطره انگیز به یادگار بذار!
+            </h4>
+            {% if form.text.errors %}
+                <div class="ui negative message">
+                    <p>
+                        متاسفانه عنوان نمی‌تواند خالی باشد:(
+                    </p>
+                </div>
+            {% endif %}
+            {% if form.text.errors %}
+                <div class="ui negative message">
+                    <p>
+                        متاسفانه متن یادگاری نمی‌تواند خالی باشد:(
+                    </p>
+                </div>
+            {% endif %}
+            {% if "signup required" in form.non_field_errors %}
+                <div class="ui negative message">
+                    <p>
+                        ابتدا باید
+                        <a href="{% url "signup" %}">فرم ثبت‌نام</a>
+                        را پر کنید. توجه کنید با این‌کار نام شما به لیست دانشجویان افزوده می‌شود.
+                    </p>
+                </div>
+            {% endif %}
+
+            <div class="ui stackable grid" style="font-size: 18px;">
+
+                <div class="eleven wide column">
+
+                               <span>
+                    از طرف
+                    </span>
+                    <div class="ui inline dropdown" style="color: teal">
+                        <input type="hidden" name="mode" id="id_mode"
+                                {% if form.mode.value %}
+                               value="{{ form.mode.value }}"
+                                {% else %}
+                               value="normal"
+                                {% endif %}
+                        >
+                        <div class="default text">
+                            لطفا انتخاب کنید
+                        </div>
+                        <div class="ui menu" id="exp">
+                            <div class="item" style="font-size: 12px;" data-value="normal">
+                                <center>
+                                    <img class="ui avatar image" src={% include 'main/profile_picture.html' with size='small' %}>
+                                    {{ user.get_full_name }}
+                                </center>
+                            </div>
+                            <div class="item" style="font-size: 12px;" data-value="anonymous">
+                                <center>
+                                    <i class="ui black large user secret icon"></i>
+                                    ناشناس
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                    <span>
+                    ارسال میشه!
+                    </span>
+                    <div class="ui form" style="margin-top: 20px;">
+                        <div class="field">
+                            <input style="font-size: 15px; line-height: 25px; margin-bottom: 10px;font-family: VezFont"
+                                   type="text" name="subject" placeholder="عنوان" maxlength="300" id="id_subject"
+                                   {% if form.subject.value %}value="{{ form.subject.value }}"{% endif %}
+                                   required="">
+                            <textarea style="height: 500px; font-size: 15px; line-height: 25px;"
+                                      placeholder="متن یادگاری" name="text" id="id_name"
+                                      required>{% if form.text.value %}{{ form.text.value }}{% endif %}</textarea>
+                        </div>
+                    </div>
+                    <button type="button" id="id_submit" class="ui huge {{config.theme_color}} button" style="margin: 20px;">
+                        ثبت
+                    </button>
+                </div>
+
+                <div class="five wide column">
+                    <center>
+                        <img class="ui rounded image" style="margin-top: 80px"
+                             src="{% include 'main/profile_picture.html' with size='big' %}">
+                    </center>
+                </div>
+
+            </div>
+        </div>
+    </form>
+    <div class="ui mini modal" style="top:auto;bottom:auto;right:auto;left:auto;">
+        <div class="header" style="text-align: right">
+            آیا از ارسال این متن مطمئن هستید؟
+        </div>
+        <div class="content" style="text-align: right">
+            یادتون باشه که این متن قراره در دفترچه یادگاری دوره چاپ بشه و این دفترچه مال همه ما هست.
+            پس لطفا از نوشتن متنهای ناراحت کننده، یا متنهایی که وجودش در دفترچه موجب ناراحتی بقیه میشه پرهیز کنید.
+        </div>
+        <div class="actions" style="text-align:left;">
+            <div class="ui negative button">
+                نه!
+            </div>
+            <div class="ui positive right labeled icon button">
+                آره بفرست بره
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script>
+        $(document).ready(function () {
+            $("#id_submit").on('click', function () {
+                $('.ui.modal').modal({
+                    onApprove: function () {
+                        $('form').submit()
+                    }
+                }).modal('show')
+                ;
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends 'main/best_base.html' %}
+{% load my_tags %}
+{% load static %}
+
+{% block active_best_participation %}active{% endblock %}
+
+{% block extra_pusher_style %}
+{#    background:linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url({% static 'images/hat-tile.jpg' %});#}
+{% endblock %}
+
+{% block content %}
+    <section>
+        <form method="post">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            <div class="ui segment" style="margin: 50px; padding: 20px; margin-left: 150px; margin-right: 150px;">
+                {% if formset.errors %}
+                    <div class="ui negative message">
+                        <p>
+                            {{ formset.errors }}
+                        </p>
+                    </div>
+                {% endif %}
+{% if new_category %}
+                                <h4 style="line-height:35px; margin: 30px; color: green">
+            دسته‌ی جدیدی از ترین‌ها به سایت اضافه شده. بهمون بگین تو کدوم دسته‌ها می‌خواین شرکت کنین.
+                                <br>
+                                برای اینکه بتونید به رای‌گیری ادامه بدید باید اول اجازه ها رو مشخص کنید.
+                                <br>
+                                اگر در یک دسته شرکت نکنید اونوقت نمی‌تونید به کاندید‌های ترین‌های اون دسته رای بدید.
+                                </h4>
+                    {% endif %}
+                    <div class="ui {{config.theme_color}} secondary segment" style="margin: 20px;">
+
+                        <div class="ui stackable grid" >
+                {% for form in formset %}
+                    {% with form.instance.category|default:form.initial.category as category %}
+                            <div class="one wide column">
+                                <div class="hidden">
+                                    {{ form.id }}
+                                    {{ form.category }}
+                                    {{ form.user }}
+                                </div>
+                                {{ form.participating }}
+                            </div>
+                            <div class="fifteen wide column">
+                                <div class="ui accordion">
+                                    <div class="title" style="font-family: VezFont">
+                        <h5>
+                            <i class="{{config.theme_color}} dropdown icon"></i>
+                            {{ category.title }}
+                        </h5>
+                    </div>
+                                    <div class="content">
+                        <div class="ui large horizontal ordered list">
+                            {{ category.description }}
+                            {% for most in category.mosts.all %}
+                                <div class="item">
+                                    {{ most.text }}
+                                </div>
+                                <br>
+                            {% endfor %}
+
+
+                        </div>
+                    </div>
+                                </div>
+                            </div>
+
+                    {% endwith %}
+                {% endfor %}
+                        {% for category, participating in known_categories %}
+                            <div class="one wide column">
+                                <input type="checkbox" {% if participating %} checked {% endif %} disabled />
+                            </div>
+                            <div class="fifteen wide column">
+                                <div class="ui accordion">
+                                    <div class="title" style="font-family: VezFont">
+                        <h5>
+                            <i class="{{config.theme_color}} dropdown icon"></i>
+                            {{ category.title }}
+                        </h5>
+                    </div>
+                                    <div class="content">
+                        <div class="ui large horizontal ordered list">
+                            {{ category.description }}
+                            {% for most in category.mosts.all %}
+                                <div class="item">
+                                    {{ most.text }}
+                                </div>
+                                <br>
+                            {% endfor %}
+
+
+                        </div>
+                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        </div>
+
+                    </div>
+
+<div style="text-align: center;">
+                    <button class="ui green massive button" style="margin: 20px;" type="submit">ثبت و ارسال</button>
+                </div>
+                </div>
+
+        </form>
+    </section>
+
+
+
+{% endblock %}
+{% block extra_script %}
+    <script language='javascript'>
+        $(document).ready(function () {
+            $('.ui.accordion').accordion();
+        });
+    </script>
+{% endblock %}
